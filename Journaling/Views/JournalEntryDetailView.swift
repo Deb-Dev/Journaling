@@ -32,7 +32,7 @@ struct JournalEntryDetailView: View {
                             .foregroundColor(.secondary)
                         
                         if entry.updatedAt != entry.createdAt {
-                            Text("Edited \(entry.updatedAt.relativeTime())")
+                            Text("entryDetail.edited \(entry.updatedAt.relativeTime())")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -78,20 +78,21 @@ struct JournalEntryDetailView: View {
             }
             .padding(.vertical)
         }
-        .navigationTitle("Journal Entry")
+        .navigationTitle("entryDetail.title")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {
                     Button(action: { isShowingEditSheet = true }) {
-                        Label("Edit", systemImage: "pencil")
+                        Label("entryDetail.edit", systemImage: "pencil")
                     }
                     
                     Button(role: .destructive, action: { isShowingDeleteAlert = true }) {
-                        Label("Delete", systemImage: "trash")
+                        Label("entryDetail.delete", systemImage: "trash")
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
+                        .accessibilityLabel(Text("entryDetail.options"))
                 }
             }
         }
@@ -100,19 +101,19 @@ struct JournalEntryDetailView: View {
                 onUpdate()
             }, existingEntry: entry)
         }
-        .alert("Delete Entry", isPresented: $isShowingDeleteAlert) {
-            Button("Cancel", role: .cancel) { }
-            Button("Delete", role: .destructive) {
+        .alert("entryDetail.deleteConfirm.title", isPresented: $isShowingDeleteAlert) {
+            Button("general.cancel", role: .cancel) { }
+            Button("general.delete", role: .destructive) {
                 deleteEntry()
             }
         } message: {
-            Text("Are you sure you want to delete this journal entry? This action cannot be undone.")
+            Text("entryDetail.deleteConfirm.message")
         }
         .alert(isPresented: .constant(!errorMessage.isEmpty)) {
             Alert(
-                title: Text("Error"),
+                title: Text("general.error.title"),
                 message: Text(errorMessage),
-                dismissButton: .default(Text("OK")) {
+                dismissButton: .default(Text("general.ok")) {
                     errorMessage = ""
                 }
             )

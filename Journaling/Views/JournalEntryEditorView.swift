@@ -38,14 +38,14 @@ struct JournalEntryEditorView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     // Date picker
-                    DatePicker("Date", selection: $entryDate, displayedComponents: [.date, .hourAndMinute])
+                    DatePicker("editor.date", selection: $entryDate, displayedComponents: [.date, .hourAndMinute])
                         .padding(.horizontal)
                     
                     Divider()
                     
                     // Mood selector
                     VStack(alignment: .leading) {
-                        Text("How are you feeling?")
+                        Text("editor.moodQuestion")
                             .font(.headline)
                             .padding(.horizontal)
                         
@@ -67,7 +67,7 @@ struct JournalEntryEditorView: View {
                     
                     // Tags
                     VStack(alignment: .leading) {
-                        Text("Tags")
+                        Text("editor.tags")
                             .font(.headline)
                             .padding(.horizontal)
                         
@@ -84,7 +84,7 @@ struct JournalEntryEditorView: View {
                         }
                         
                         HStack {
-                            TextField("Add tag", text: $newTag)
+                            TextField("editor.addTag.placeholder", text: $newTag)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .submitLabel(.done)
                                 .onSubmit {
@@ -94,6 +94,7 @@ struct JournalEntryEditorView: View {
                             Button(action: addTag) {
                                 Image(systemName: "plus.circle.fill")
                                     .foregroundColor(.accentColor)
+                                    .accessibilityLabel(Text("editor.addTag.button"))
                             }
                             .disabled(newTag.isEmpty)
                         }
@@ -104,7 +105,7 @@ struct JournalEntryEditorView: View {
                     
                     // Journal content
                     VStack(alignment: .leading) {
-                        Text("Journal Entry")
+                        Text("editor.journalEntry")
                             .font(.headline)
                             .padding(.horizontal)
                         
@@ -122,11 +123,11 @@ struct JournalEntryEditorView: View {
                 }
                 .padding(.vertical)
             }
-            .navigationTitle(existingEntry == nil ? "New Entry" : "Edit Entry")
+            .navigationTitle(existingEntry == nil ? NSLocalizedString("editor.title.new", comment: "New Entry") : NSLocalizedString("editor.title.edit", comment: "Edit Entry"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
+                    Button("general.cancel") {
                         if content != lastSavedContent {
                             showingDiscardAlert = true
                         } else {
@@ -141,7 +142,7 @@ struct JournalEntryEditorView: View {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle())
                         } else {
-                            Text("Save")
+                            Text("general.save")
                         }
                     }
                     .disabled(content.isEmpty || isLoading)
@@ -149,15 +150,18 @@ struct JournalEntryEditorView: View {
             }
             .alert(isPresented: $showingDiscardAlert) {
                 Alert(
-                    title: Text("Discard Changes?"),
-                    message: Text("You have unsaved changes. Are you sure you want to discard them?"),
-                    primaryButton: .destructive(Text("Discard")) {
+                    title: Text("editor.discardAlert.title"),
+                    message: Text("editor.discardAlert.message"),
+                    primaryButton: .destructive(Text("editor.discardAlert.discard")) {
                         dismiss()
                     },
-                    secondaryButton: .cancel()
+                    secondaryButton: .cancel(Text("editor.discardAlert.keepEditing"))
                 )
             }
-            .alert(isPresented: .constant(!errorMessage.isEmpty)) {
+            .alert(isPresented: Binding(
+                get: { !errorMessage.isEmpty },
+                set: { if !$0 { errorMessage = "" } }
+            )) {
                 Alert(
                     title: Text("Error"),
                     message: Text(errorMessage),
