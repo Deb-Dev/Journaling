@@ -23,7 +23,7 @@ class AppState: ObservableObject {
     @Published var isAuthenticated: Bool = false
     @Published var isOnboarding: Bool = true
     
-    init(authService: AuthServiceProtocol = MockAuthService(),
+    init(authService: AuthServiceProtocol = FirebaseAuthService(),
          journalService: JournalServiceProtocol = MockJournalService()) {
         self.authService = authService
         self.journalService = journalService
@@ -35,6 +35,23 @@ class AppState: ObservableObject {
         // For demo purpose - set this to false to skip onboarding
         // In real app, we would check if this is first launch
         isOnboarding = UserDefaults.standard.object(forKey: "hasCompletedOnboarding") == nil
+        
+        // Subscribe to authentication state changes
+        if let firebaseAuthService = authService as? FirebaseAuthService {
+            firebaseAuthService.authStateChanges()
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] user in
+                    guard let self = self else { return }
+                    self.currentUser = user
+                    self.isAuthenticated = user != nil
+                    
+                    // If this is a new user, show onboarding
+                    if user != nil && user?.journalingGoals.isEmpty ?? true {
+                        self.isOnboarding = true
+                    }
+                }
+                .store(in: &cancellables)
+        }
     }
     
     // MARK: - Authentication Methods
