@@ -35,16 +35,16 @@ struct CalendarView: View {
                 // Entries for selected date
                 VStack(alignment: .leading) {
                     if let dateEntries = getEntriesForSelectedDate(), !dateEntries.isEmpty {
-                        Text("\(dateEntries.count) \(dateEntries.count == 1 ? "Entry" : "Entries") on \(selectedDate.formatted(date: .long, time: .omitted))")
+                        Text("calendar.entries".localized(with: dateEntries.count) + " on \(selectedDate.formatted(date: .long, time: .omitted))") // Updated localization
                             .font(.headline)
                             .padding(.horizontal)
-                        
+
                         List {
                             ForEach(dateEntries) { entry in
                                 EntryListItemView(entry: entry)
                                     .contentShape(Rectangle())
                                     .onTapGesture {
-                                        selectedEntryId = entry.id
+                                        selectedEntryId = entry.id ?? ""
                                         isShowingEntryDetail = true
                                     }
                                     .listRowSeparator(.hidden)
@@ -61,27 +61,27 @@ struct CalendarView: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 50, height: 50)
                                 .foregroundColor(.secondary)
-                            
-                            Text("No entries on \(selectedDate.formatted(date: .long, time: .omitted))")
+
+                            Text("calendar.noEntries.title".localized + " on \(selectedDate.formatted(date: .long, time: .omitted))") // Updated localization
                                 .font(.headline)
                                 .foregroundColor(.secondary)
                                 .padding(.top, 10)
-                            
+
                             Button(action: {
-                                // Create a new entry for the selected date
+                                // TODO: Implement creating a new entry for the selected date
                             }) {
-                                Text("Create Entry")
+                                Text("home.newEntry.button".localized) // Reusing key
                                     .primaryButtonStyle()
                                     .padding(.horizontal, 40)
                                     .padding(.top, 20)
                             }
-                            
+
                             Spacer()
                         }
                     }
                 }
             }
-            .navigationTitle("Calendar")
+            .navigationTitle("calendar.title".localized) // Updated key
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $isShowingEntryDetail) {
                 if let entry = entries.first(where: { $0.id == selectedEntryId }) {
@@ -95,9 +95,9 @@ struct CalendarView: View {
             }
             .alert(isPresented: .constant(!errorMessage.isEmpty)) {
                 Alert(
-                    title: Text("Error"),
+                    title: Text("general.error.title".localized), // Updated key
                     message: Text(errorMessage),
-                    dismissButton: .default(Text("OK")) {
+                    dismissButton: .default(Text("general.ok".localized)) { // Updated key
                         errorMessage = ""
                     }
                 )

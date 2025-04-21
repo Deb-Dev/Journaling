@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 enum Mood: String, CaseIterable, Codable, Identifiable {
     case happy
@@ -41,21 +42,25 @@ enum Mood: String, CaseIterable, Codable, Identifiable {
 }
 
 struct JournalEntry: Codable, Identifiable {
-    var id: String
+    @DocumentID var id: String?
+    
     var userId: String
     var content: String
     var createdAt: Date
     var updatedAt: Date
     var mood: Mood
     var tags: [String]
+    var isFavorite: Bool = false
     
-    init(id: String = UUID().uuidString,
+    init(id: String?,
          userId: String,
          content: String = "",
          createdAt: Date = Date(),
          updatedAt: Date = Date(),
          mood: Mood = .neutral,
-         tags: [String] = []) {
+         tags: [String] = [],
+         isFavorite: Bool = false)
+    {
         self.id = id
         self.userId = userId
         self.content = content
@@ -63,6 +68,7 @@ struct JournalEntry: Codable, Identifiable {
         self.updatedAt = updatedAt
         self.mood = mood
         self.tags = tags
+        self.isFavorite = isFavorite
     }
 }
 

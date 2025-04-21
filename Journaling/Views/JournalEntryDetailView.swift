@@ -30,9 +30,9 @@ struct JournalEntryDetailView: View {
                         Text(entry.createdAt.formatted(date: .long, time: .shortened))
                             .font(.subheadline)
                             .foregroundColor(.secondary)
-                        
+
                         if entry.updatedAt != entry.createdAt {
-                            Text("entryDetail.edited \(entry.updatedAt.relativeTime())")
+                            Text("entryDetail.edited".localized + " \(entry.updatedAt.relativeTime())") // Updated key
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -54,6 +54,9 @@ struct JournalEntryDetailView: View {
                 if !entry.tags.isEmpty {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
+                            Text("entryDetail.tags.label".localized + ":") // Added key
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                             ForEach(entry.tags, id: \.self) { tag in
                                 Text(tag)
                                     .font(.caption)
@@ -78,21 +81,21 @@ struct JournalEntryDetailView: View {
             }
             .padding(.vertical)
         }
-        .navigationTitle("entryDetail.title")
+        .navigationTitle("entryDetail.title".localized) // Updated key
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {
                     Button(action: { isShowingEditSheet = true }) {
-                        Label("entryDetail.edit", systemImage: "pencil")
+                        Label("entryDetail.edit".localized, systemImage: "pencil")
                     }
                     
                     Button(role: .destructive, action: { isShowingDeleteAlert = true }) {
-                        Label("entryDetail.delete", systemImage: "trash")
+                        Label("entryDetail.delete".localized, systemImage: "trash") // Updated key
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
-                        .accessibilityLabel(Text("entryDetail.options"))
+                        .accessibilityLabel(Text("entryDetail.options".localized)) // Updated key
                 }
             }
         }
@@ -101,19 +104,19 @@ struct JournalEntryDetailView: View {
                 onUpdate()
             }, existingEntry: entry)
         }
-        .alert("entryDetail.deleteConfirm.title", isPresented: $isShowingDeleteAlert) {
-            Button("general.cancel", role: .cancel) { }
-            Button("general.delete", role: .destructive) {
+        .alert("entryDetail.deleteConfirm.title".localized, isPresented: $isShowingDeleteAlert) { // Updated key
+            Button("general.cancel".localized, role: .cancel) { }
+            Button("general.delete".localized, role: .destructive) { // Updated key
                 deleteEntry()
             }
         } message: {
-            Text("entryDetail.deleteConfirm.message")
+            Text("entryDetail.deleteConfirm.message".localized) // Updated key
         }
         .alert(isPresented: .constant(!errorMessage.isEmpty)) {
             Alert(
-                title: Text("general.error.title"),
+                title: Text("general.error.title".localized),
                 message: Text(errorMessage),
-                dismissButton: .default(Text("general.ok")) {
+                dismissButton: .default(Text("general.ok".localized)) {
                     errorMessage = ""
                 }
             )
@@ -124,7 +127,7 @@ struct JournalEntryDetailView: View {
         isLoading = true
         errorMessage = ""
         
-        appState.deleteEntry(withId: entry.id)
+        appState.deleteEntry(withId: entry.id ?? "")
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 isLoading = false
@@ -145,7 +148,7 @@ struct JournalEntryDetailView_Previews: PreviewProvider {
         NavigationStack {
             JournalEntryDetailView(
                 entry: JournalEntry(
-                    userId: "mock-user",
+                    id: nil, userId: "mock-user",
                     content: "This is a sample journal entry with multiple paragraphs of content to demonstrate how the detail view displays longer text entries. It might include reflections on the day, personal thoughts, or memorable moments.\n\nThe formatting should handle line breaks and paragraphs properly to make the content readable and pleasant to review.",
                     mood: .content,
                     tags: ["reflection", "gratitude"]

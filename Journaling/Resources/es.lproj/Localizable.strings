@@ -1,0 +1,164 @@
+/*
+  Localizable.strings
+  Journaling
+  Spanish translations updated 2025-04-17
+*/
+
+// MARK: - General
+"general.error.title" = "Error";
+"general.ok" = "Aceptar";
+"general.cancel" = "Cancelar";
+"general.back" = "Atrás";
+"general.next" = "Siguiente";
+"general.done" = "Listo";
+"general.save" = "Guardar";
+"general.loading" = "Cargando...";
+"general.error.network" = "Error de red. Por favor, verifica tu conexión.";
+"general.error.unknown" = "Ocurrió un error inesperado.";
+
+// MARK: - Authentication
+// Welcome View
+"welcome.title" = "Bienvenido a Reflect";
+"welcome.subtitle" = "Tu espacio personal para pensamientos y sentimientos.";
+"welcome.feature1.title" = "Captura Momentos";
+"welcome.feature1.description" = "Anota fácilmente tus experiencias y reflexiones diarias.";
+"welcome.feature2.title" = "Registra tu estado de ánimo";
+"welcome.feature2.description" = "Comprende tus patrones emocionales a lo largo del tiempo.";
+"welcome.feature3.title" = "Mantente constante";
+"welcome.feature3.description" = "[es] Set reminders and build a healthy journaling habit.";
+"welcome.login.button" = "[es] Log In";
+"welcome.signup.button" = "[es] Sign Up";
+
+// Login View
+"login.title" = "[es] Log In";
+"login.email.placeholder" = "[es] Email";
+"login.password.placeholder" = "[es] Password";
+"login.forgotPassword.button" = "[es] Forgot Password?";
+"login.button" = "[es] Log In";
+"login.signup.prompt" = "[es] Don't have an account?";
+"login.signup.link" = "[es] Sign up";
+
+// Signup View
+"signup.title" = "[es] Create Account";
+"signup.name.placeholder" = "[es] Name";
+"signup.email.placeholder" = "[es] Email";
+"signup.password.placeholder" = "[es] Password (min. 6 characters)";
+"signup.button" = "[es] Sign Up";
+"signup.login.prompt" = "[es] Already have an account?";
+"signup.login.link" = "[es] Log in";
+
+// Forgot Password View
+"forgotPassword.title" = "[es] Reset Password";
+"forgotPassword.instructions" = "[es] Enter your email address and we'll send you instructions to reset your password.";
+"forgotPassword.email.placeholder" = "[es] Email";
+"forgotPassword.sendReset.button" = "[es] Send Reset Link";
+"forgotPassword.backToLogin.button" = "[es] Back to Login";
+"forgotPassword.success.message" = "[es] Password reset instructions sent to your email.";
+
+// MARK: - Home View
+"home.title" = "[es] Home";
+"home.recentEntries.title" = "[es] Recent Entries";
+"home.newEntry.button" = "[es] New Entry";
+"home.loading.message" = "[es] Loading entries...";
+"home.emptyState.title" = "[es] No Entries Yet";
+"home.emptyState.message" = "[es] Tap the '+' button to create your first journal entry.";
+"home.createFirstEntry.button" = "[es] Create First Entry";
+"home.stats.title" = "[es] Your Stats";
+"home.stats.totalEntries" = "[es] Total Entries";
+"home.stats.dayStreak" = "[es] Day Streak";
+"home.stats.commonMood" = "[es] Common Mood";
+
+// MARK: - Calendar View
+"calendar.title" = "[es] Calendar";
+"calendar.entries" = "[es] %d Entries";
+"calendar.noEntries.title" = "[es] No Entries";
+"calendar.noEntries.message" = "[es] No entries recorded for this date.";
+
+// MARK: - Journal Entry Detail View
+"entryDetail.title" = "[es] Entry Detail";
+"entryDetail.mood.label" = "[es] Mood";
+"entryDetail.tags.label" = "[es] Tags";
+"entryDetail.created" = "[es] Created";
+"entryDetail.edited" = "[es] Edited";
+"entryDetail.edit" = "[es] Edit";
+"entryDetail.delete" = "[es] Delete";
+"entryDetail.options" = "[es] Options";
+"entryDetail.deleteConfirm.title" = "[es] Delete Entry?";
+"entryDetail.deleteConfirm.message" = "[es] Are you sure you want to permanently delete this journal entry?";
+"general.delete" = "[es] Delete";
+
+// MARK: - Journal Entry Editor View
+"editor.title.new" = "[es] New Entry";
+"editor.title.edit" = "[es] Edit Entry";
+"editor.date" = "[es] Date";
+"editor.moodQuestion" = "[es] How are you feeling?";
+"editor.tags" = "[es] Tags";
+"editor.addTag.placeholder" = "[es] Add a tag";
+"editor.journalEntry" = "[es] Journal Entry"; // Added
+"editor.journalEntry.placeholder" = "[es] Start writing your thoughts here...";
+"editor.discardAlert.title" = "[es] Discard Changes?";
+"editor.discardAlert.message" = "[es] Are you sure you want to discard your changes?";
+"editor.discardAlert.discard" = "[es] Discard";
+"editor.discardAlert.keepEditing" = "[es] Keep Editing";
+"general.add" = "[es] Add";
+
+// MARK: - Onboarding
+"onboarding.welcome.title" = "[es] Welcome to Reflect"; // Reusing welcome.title
+"onboarding.welcome.description" = "[es] Your personal journaling companion for mindfulness and self-reflection.";
+"onboarding.getStarted.button" = "[es] Get Started";
+"onboarding.personalization.title" = "[es] Personalize Your Experience";
+"onboarding.personalization.subtitle" = "[es] Let's make Reflect yours. Tell us a bit about yourself and your journaling goals.";
+"onboarding.personalization.name.label" = "[es] Your Name";
+"onboarding.personalization.name.placeholder" = "[es] Enter your name";
+"onboarding.personalization.goals.label" = "[es] Journaling Goals";
+"onboarding.personalization.goals.description" = "[es] What would you like to achieve with journaling?";
+"onboarding.notifications.title" = "[es] Reminder Setup";
+"onboarding.notifications.subtitle" = "[es] Never miss a journaling session with daily reminders.";
+"onboarding.notifications.enable.toggle" = "[es] Enable Daily Reminders";
+"onboarding.notifications.time.label" = "[es] Reminder Time";
+"onboarding.complete.title" = "[es] You're All Set!";
+"onboarding.complete.subtitle" = "[es] Your Reflect journal is ready for your thoughts, feelings, and reflections.";
+"onboarding.complete.button" = "[es] Start Journaling";
+"general.continue" = "[es] Continue";
+
+// MARK: - Profile & Settings
+"profile.title" = "[es] Profile";
+"profile.edit.button" = "[es] Edit";
+"profile.personalInfo.header" = "[es] Personal Information";
+"profile.name.placeholder" = "[es] Your Name";
+"profile.email.label" = "[es] Email";
+"profile.goals.header" = "[es] Journaling Goals";
+"profile.edit.title" = "[es] Edit Profile";
+"profile.logout.button" = "[es] Log Out";
+"profile.logout.confirm.title" = "[es] Log Out?";
+"profile.logout.confirm.message" = "[es] Are you sure you want to log out?";
+
+"settings.title" = "[es] Settings";
+"settings.notifications.header" = "[es] Notifications";
+"settings.notifications.enable.toggle" = "[es] Enable Reminders";
+"settings.notifications.time.label" = "[es] Reminder Time";
+"settings.appearance.header" = "[es] Appearance";
+"settings.appearance.theme.label" = "[es] Theme";
+"settings.appearance.theme.system" = "[es] System";
+"settings.appearance.theme.light" = "[es] Light";
+"settings.appearance.theme.dark" = "[es] Dark";
+"settings.security.header" = "[es] Security";
+"settings.security.biometrics.toggle" = "[es] Use Face ID / Touch ID";
+"settings.legal.header" = "[es] Legal";
+"settings.legal.privacyPolicy" = "[es] Privacy Policy";
+"settings.legal.termsOfService" = "[es] Terms of Service";
+"settings.account.header" = "[es] Account";
+"settings.account.delete.button" = "[es] Delete Account";
+"settings.account.delete.confirm.title" = "[es] Delete Account?";
+"settings.account.delete.confirm.message" = "[es] This action is irreversible. All your journal entries and data will be permanently deleted.";
+
+// MARK: - Moods
+"mood.happy" = "[es] Happy";
+"mood.content" = "[es] Content";
+"mood.neutral" = "[es] Neutral";
+"mood.sad" = "[es] Sad";
+"mood.anxious" = "[es] Anxious";
+"mood.angry" = "[es] Angry";
+
+// MARK: - App Specific
+"app.name" = "[es] Reflect";

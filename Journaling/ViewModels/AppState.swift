@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import FirebaseFirestore
 
 /// Main state container for the app
 class AppState: ObservableObject {
@@ -24,7 +25,7 @@ class AppState: ObservableObject {
     @Published var isOnboarding: Bool = true
     
     init(authService: AuthServiceProtocol = FirebaseAuthService(),
-         journalService: JournalServiceProtocol = MockJournalService()) {
+         journalService: JournalServiceProtocol = FirestoreJournalService()) {
         self.authService = authService
         self.journalService = journalService
         
@@ -169,7 +170,7 @@ extension AppState {
         }
         
         let entry = JournalEntry(
-            userId: userId,
+            id: nil, userId: userId,
             content: content,
             createdAt: Date(),
             updatedAt: Date(),

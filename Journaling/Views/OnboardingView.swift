@@ -70,7 +70,7 @@ struct OnboardingView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     if currentStep != .complete {
-                        Button("Skip") {
+                        Button("onboarding.skip.button".localized) {
                             saveAndCompleteOnboarding()
                         }
                         .foregroundColor(.secondary)
@@ -79,9 +79,9 @@ struct OnboardingView: View {
             }
             .alert(isPresented: .constant(!errorMessage.isEmpty)) {
                 Alert(
-                    title: Text("Error"),
+                    title: Text("general.error.title".localized),
                     message: Text(errorMessage),
-                    dismissButton: .default(Text("OK")) {
+                    dismissButton: .default(Text("general.ok".localized)) {
                         errorMessage = ""
                     }
                 )
@@ -142,20 +142,20 @@ struct OnboardingWelcomeView: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 100, height: 100)
                 .foregroundColor(.accentColor)
-            
-            Text("Welcome to Reflect")
+
+            Text("onboarding.welcome.title".localized)
                 .font(.largeTitle)
                 .fontWeight(.bold)
-            
-            Text("Your personal journaling companion for mindfulness and self-reflection.")
+
+            Text("onboarding.welcome.description".localized)
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 30)
-            
+
             Spacer()
-            
+
             Button(action: onContinue) {
-                Text("Get Started")
+                Text("onboarding.getStarted.button".localized)
                     .primaryButtonStyle()
             }
             .padding(.horizontal, 30)
@@ -173,32 +173,32 @@ struct OnboardingPersonalizationView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 25) {
-                Text("Personalize Your Experience")
+                Text("onboarding.personalization.title".localized)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 20)
-                
-                Text("Let's make Reflect yours. Tell us a bit about yourself and your journaling goals.")
+
+                Text("onboarding.personalization.subtitle".localized)
                     .font(.body)
-                
+
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Your Name")
+                    Text("onboarding.personalization.name.label".localized)
                         .font(.headline)
-                    
-                    TextField("Enter your name", text: $name)
+
+                    TextField("onboarding.personalization.name.placeholder".localized, text: $name)
                         .textFieldStyle()
                         .padding(.horizontal, 0)
                 }
                 .padding(.top, 10)
                 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Journaling Goals")
+                    Text("onboarding.personalization.goals.label".localized)
                         .font(.headline)
-                    
-                    Text("What would you like to achieve with journaling?")
+
+                    Text("onboarding.personalization.goals.description".localized)
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    
+
                     TextEditor(text: $journalingGoals)
                         .frame(minHeight: 120)
                         .padding(10)
@@ -213,7 +213,7 @@ struct OnboardingPersonalizationView: View {
                 Spacer()
                 
                 Button(action: onContinue) {
-                    Text("Continue")
+                    Text("general.continue".localized)
                         .primaryButtonStyle()
                 }
                 .disabled(name.isEmpty)
@@ -233,23 +233,23 @@ struct OnboardingNotificationsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 25) {
-                Text("Reminder Setup")
+                Text("onboarding.notifications.title".localized)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 20)
-                
-                Text("Never miss a journaling session with daily reminders.")
+
+                Text("onboarding.notifications.subtitle".localized)
                     .font(.body)
-                
-                Toggle("Enable Daily Reminders", isOn: $enableNotifications)
+
+                Toggle("onboarding.notifications.enable.toggle".localized, isOn: $enableNotifications)
                     .font(.headline)
                     .padding(.top, 10)
-                
+
                 if enableNotifications {
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Reminder Time")
+                        Text("onboarding.notifications.time.label".localized)
                             .font(.headline)
-                        
+
                         DatePicker("", selection: $reminderTime, displayedComponents: .hourAndMinute)
                             .datePickerStyle(WheelDatePickerStyle())
                             .labelsHidden()
@@ -260,7 +260,7 @@ struct OnboardingNotificationsView: View {
                 Spacer()
                 
                 Button(action: onContinue) {
-                    Text("Continue")
+                    Text("general.continue".localized)
                         .primaryButtonStyle()
                 }
                 .padding(.vertical, 20)
@@ -283,20 +283,20 @@ struct OnboardingCompleteView: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 100, height: 100)
                 .foregroundColor(.green)
-            
-            Text("You're All Set!")
+
+            Text("onboarding.complete.title".localized)
                 .font(.largeTitle)
                 .fontWeight(.bold)
-            
-            Text("Your Reflect journal is ready for your thoughts, feelings, and reflections.")
+
+            Text("onboarding.complete.subtitle".localized)
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 30)
-            
+
             Spacer()
-            
+
             Button(action: onGetStarted) {
-                Text("Start Journaling")
+                Text("onboarding.complete.button".localized)
                     .primaryButtonStyle()
             }
             .padding(.horizontal, 30)

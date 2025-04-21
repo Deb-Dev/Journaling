@@ -1,3 +1,4 @@
+// filepath: /Users/debchow/Documents/coco/Journaling/Journaling/Services/FirebaseAuthService.swift
 //
 //  FirebaseAuthService.swift
 //  Journaling
@@ -6,59 +7,49 @@
 //
 
 import Foundation
-import Combine
 import Firebase
 import FirebaseAuth
+import Combine
 
-/// Implementation of the AuthService protocol using Firebase Authentication
 class FirebaseAuthService: AuthServiceProtocol {
+    private var cancellables = Set<AnyCancellable>()
     
-    // MARK: - Properties
-    
-    private var authStateSubscription: AuthStateDidChangeListenerHandle?
-    private var authStatePublisher = PassthroughSubject<User?, Never>()
-    
-    // MARK: - Initialization
+    // Subject to emit auth state changes
+    private let authStateSubject = PassthroughSubject<User?, Never>()
     
     init() {
-        setupAuthStateListener()
-    }
-    
-    deinit {
-        if let authStateSubscription = authStateSubscription {
-            Auth.auth().removeStateDidChangeListener(authStateSubscription)
-        }
-    }
-    
-    // MARK: - Private Methods
-    
-    private func setupAuthStateListener() {
-        authStateSubscription = Auth.auth().addStateDidChangeListener { [weak self] (_, firebaseUser) in
+        // Listen for authentication state changes
+        _ = Auth.auth().addStateDidChangeListener { [weak self] _, firebaseUser in
             guard let self = self else { return }
             
             if let firebaseUser = firebaseUser {
-                let appUser = self.mapFirebaseUserToAppUser(firebaseUser)
-                self.authStatePublisher.send(appUser)
+                // User is signed in
+                let user = self.mapFirebaseUser(firebaseUser)
+                self.authStateSubject.send(user)
             } else {
-                self.authStatePublisher.send(nil)
+                // User is signed out
+                self.authStateSubject.send(nil)
             }
         }
     }
     
-    private func mapFirebaseUserToAppUser(_ firebaseUser: FirebaseAuth.User) -> User {
-        return User(
-            id: firebaseUser.uid,
-            email: firebaseUser.email ?? "",
-            name: firebaseUser.displayName ?? "",
-            journalingGoals: "", // These fields aren't stored in Firebase Auth
-            notificationsEnabled: true,
-            reminderTime: Calendar.current.date(bySettingHour: 20, minute: 0, second: 0, of: Date()) ?? Date(),
-            useBiometricAuth: false,
-            prefersDarkMode: false
-        )
+    // MARK: - Authentication State Changes
+    
+    func authStateChanges() -> AnyPublisher<User?, Never> {
+        return authStateSubject.eraseToAnyPublisher()
     }
     
-    // MARK: - AuthServiceProtocol Implementation
+    // MARK: - Current User
+    
+    func getCurrentUser() -> User? {
+        guard let firebaseUser = Auth.auth().currentUser else {
+            return nil
+        }
+        
+        return mapFirebaseUser(firebaseUser)
+    }
+    
+    // MARK: - Sign In
     
     func login(email: String, password: String) -> AnyPublisher<User, AuthError> {
         return Future<User, AuthError> { [weak self] promise in
@@ -69,7 +60,7 @@ class FirebaseAuthService: AuthServiceProtocol {
             
             Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
                 if let error = error {
-                    let authError = self.mapFirebaseErrorToAuthError(error)
+                    let authError = self.mapFirebaseError(error)
                     promise(.failure(authError))
                     return
                 }
@@ -79,12 +70,14 @@ class FirebaseAuthService: AuthServiceProtocol {
                     return
                 }
                 
-                let appUser = self.mapFirebaseUserToAppUser(firebaseUser)
-                promise(.success(appUser))
+                let user = self.mapFirebaseUser(firebaseUser)
+                promise(.success(user))
             }
         }
         .eraseToAnyPublisher()
     }
+    
+    // MARK: - Sign Up
     
     func signup(email: String, password: String, name: String) -> AnyPublisher<User, AuthError> {
         return Future<User, AuthError> { [weak self] promise in
@@ -95,7 +88,7 @@ class FirebaseAuthService: AuthServiceProtocol {
             
             Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
                 if let error = error {
-                    let authError = self.mapFirebaseErrorToAuthError(error)
+                    let authError = self.mapFirebaseError(error)
                     promise(.failure(authError))
                     return
                 }
@@ -114,15 +107,17 @@ class FirebaseAuthService: AuthServiceProtocol {
                         print("Error updating display name: \(error.localizedDescription)")
                     }
                     
-                    // Return the user regardless of profile update success
-                    // (name will be updated when auth state changes if profile update succeeds)
-                    let appUser = self.mapFirebaseUserToAppUser(firebaseUser)
-                    promise(.success(appUser))
+                    // Even if there's an error updating the display name, we'll create the user
+                    // and store the name in Firestore later
+                    let user = self.mapFirebaseUser(firebaseUser, name: name)
+                    promise(.success(user))
                 }
             }
         }
         .eraseToAnyPublisher()
     }
+    
+    // MARK: - Reset Password
     
     func resetPassword(email: String) -> AnyPublisher<Void, AuthError> {
         return Future<Void, AuthError> { [weak self] promise in
@@ -133,7 +128,7 @@ class FirebaseAuthService: AuthServiceProtocol {
             
             Auth.auth().sendPasswordReset(withEmail: email) { error in
                 if let error = error {
-                    let authError = self.mapFirebaseErrorToAuthError(error)
+                    let authError = self.mapFirebaseError(error)
                     promise(.failure(authError))
                     return
                 }
@@ -143,6 +138,8 @@ class FirebaseAuthService: AuthServiceProtocol {
         }
         .eraseToAnyPublisher()
     }
+    
+    // MARK: - Sign Out
     
     func logout() -> AnyPublisher<Void, Never> {
         return Future<Void, Never> { promise in
@@ -157,40 +154,39 @@ class FirebaseAuthService: AuthServiceProtocol {
         .eraseToAnyPublisher()
     }
     
-    func getCurrentUser() -> User? {
-        guard let firebaseUser = Auth.auth().currentUser else {
-            return nil
-        }
-        
-        return mapFirebaseUserToAppUser(firebaseUser)
-    }
-    
     // MARK: - Helper Methods
     
-    private func mapFirebaseErrorToAuthError(_ error: Error) -> AuthError {
+    private func mapFirebaseUser(_ firebaseUser: FirebaseAuth.User, name: String? = nil) -> User {
+        // In a real app, you'd fetch additional user data from Firestore here
+        return User(
+            id: firebaseUser.uid,
+            email: firebaseUser.email ?? "",
+            name: name ?? firebaseUser.displayName ?? "",
+            journalingGoals: "",
+            notificationsEnabled: true,
+            reminderTime: Calendar.current.date(bySettingHour: 20, minute: 0, second: 0, of: Date()) ?? Date(),
+            useBiometricAuth: false,
+            prefersDarkMode: false
+        )
+    }
+    
+    private func mapFirebaseError(_ error: Error) -> AuthError {
         let nsError = error as NSError
-        let errorCode = AuthErrorCode(_bridgedNSError: nsError)?.code
         
-        switch errorCode {
-        case .wrongPassword, .userNotFound, .invalidEmail:
+        switch nsError.code {
+        case AuthErrorCode.wrongPassword.rawValue,
+             AuthErrorCode.userNotFound.rawValue,
+             AuthErrorCode.invalidEmail.rawValue:
             return .invalidCredentials
-        case .emailAlreadyInUse:
+        case AuthErrorCode.emailAlreadyInUse.rawValue:
             return .userAlreadyExists
-        case .weakPassword:
-            return .weakPassword
-        case .networkError:
+        case AuthErrorCode.networkError.rawValue:
             return .networkError
+        case AuthErrorCode.weakPassword.rawValue:
+            return .weakPassword
         default:
+            print("Unmapped Firebase error: \(nsError.code) - \(error.localizedDescription)")
             return .unknown
         }
-    }
-}
-
-// MARK: - Auth State Publisher Extension
-
-extension FirebaseAuthService {
-    /// Returns a publisher that emits the current user when auth state changes
-    func authStateChanges() -> AnyPublisher<User?, Never> {
-        return authStatePublisher.eraseToAnyPublisher()
     }
 }

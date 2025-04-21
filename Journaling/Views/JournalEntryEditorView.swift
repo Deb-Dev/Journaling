@@ -38,14 +38,14 @@ struct JournalEntryEditorView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     // Date picker
-                    DatePicker("editor.date", selection: $entryDate, displayedComponents: [.date, .hourAndMinute])
+                    DatePicker("editor.date".localized, selection: $entryDate, displayedComponents: [.date, .hourAndMinute])
                         .padding(.horizontal)
                     
                     Divider()
                     
                     // Mood selector
                     VStack(alignment: .leading) {
-                        Text("editor.moodQuestion")
+                        Text("editor.moodQuestion".localized)
                             .font(.headline)
                             .padding(.horizontal)
                         
@@ -67,7 +67,7 @@ struct JournalEntryEditorView: View {
                     
                     // Tags
                     VStack(alignment: .leading) {
-                        Text("editor.tags")
+                        Text("editor.tags".localized)
                             .font(.headline)
                             .padding(.horizontal)
                         
@@ -84,17 +84,17 @@ struct JournalEntryEditorView: View {
                         }
                         
                         HStack {
-                            TextField("editor.addTag.placeholder", text: $newTag)
+                            TextField("editor.addTag.placeholder".localized, text: $newTag)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .submitLabel(.done)
                                 .onSubmit {
                                     addTag()
                                 }
-                            
+
                             Button(action: addTag) {
                                 Image(systemName: "plus.circle.fill")
                                     .foregroundColor(.accentColor)
-                                    .accessibilityLabel(Text("editor.addTag.button"))
+                                    .accessibilityLabel(Text("general.add".localized)) // Updated key
                             }
                             .disabled(newTag.isEmpty)
                         }
@@ -105,7 +105,7 @@ struct JournalEntryEditorView: View {
                     
                     // Journal content
                     VStack(alignment: .leading) {
-                        Text("editor.journalEntry")
+                        Text("editor.journalEntry".localized)
                             .font(.headline)
                             .padding(.horizontal)
                         
@@ -115,7 +115,14 @@ struct JournalEntryEditorView: View {
                             .background(Color(.systemGray6))
                             .cornerRadius(8)
                             .padding(.horizontal)
-                            .onChange(of: content) { _ in
+                            .overlay(
+                                Text("editor.journalEntry.placeholder".localized) // Added key
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .padding(.horizontal)
+                                    .opacity(content.isEmpty ? 1 : 0) // Show placeholder when empty
+                            )
+                            .onChange(of: content) {
                                 // Reset the autosave timer when content changes
                                 resetAutoSaveTimer()
                             }
@@ -123,11 +130,11 @@ struct JournalEntryEditorView: View {
                 }
                 .padding(.vertical)
             }
-            .navigationTitle(existingEntry == nil ? NSLocalizedString("editor.title.new", comment: "New Entry") : NSLocalizedString("editor.title.edit", comment: "Edit Entry"))
+            .navigationTitle(existingEntry == nil ? "editor.title.new".localized : "editor.title.edit".localized) // Updated keys
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("general.cancel") {
+                    Button("general.cancel".localized) {
                         if content != lastSavedContent {
                             showingDiscardAlert = true
                         } else {
@@ -142,7 +149,7 @@ struct JournalEntryEditorView: View {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle())
                         } else {
-                            Text("general.save")
+                            Text("general.save".localized)
                         }
                     }
                     .disabled(content.isEmpty || isLoading)
@@ -150,12 +157,12 @@ struct JournalEntryEditorView: View {
             }
             .alert(isPresented: $showingDiscardAlert) {
                 Alert(
-                    title: Text("editor.discardAlert.title"),
-                    message: Text("editor.discardAlert.message"),
-                    primaryButton: .destructive(Text("editor.discardAlert.discard")) {
+                    title: Text("editor.discardAlert.title".localized), // Updated key
+                    message: Text("editor.discardAlert.message".localized), // Updated key
+                    primaryButton: .destructive(Text("editor.discardAlert.discard".localized)) { // Updated key
                         dismiss()
                     },
-                    secondaryButton: .cancel(Text("editor.discardAlert.keepEditing"))
+                    secondaryButton: .cancel(Text("editor.discardAlert.keepEditing".localized)) // Updated key
                 )
             }
             .alert(isPresented: Binding(
@@ -163,9 +170,9 @@ struct JournalEntryEditorView: View {
                 set: { if !$0 { errorMessage = "" } }
             )) {
                 Alert(
-                    title: Text("Error"),
+                    title: Text("general.error.title".localized),
                     message: Text(errorMessage),
-                    dismissButton: .default(Text("OK")) {
+                    dismissButton: .default(Text("general.ok".localized)) {
                         errorMessage = ""
                     }
                 )
@@ -281,7 +288,7 @@ struct MoodButton: View {
     let mood: Mood
     let isSelected: Bool
     let onSelect: () -> Void
-    
+
     var body: some View {
         VStack {
             Text(mood.emoji)
@@ -295,8 +302,8 @@ struct MoodButton: View {
                     Circle()
                         .stroke(isSelected ? Color.accentColor : Color.clear, lineWidth: 2)
                 )
-            
-            Text(mood.description)
+
+            Text(mood.description.localized) // Updated to use localized description
                 .font(.caption)
                 .foregroundColor(isSelected ? .primary : .secondary)
         }

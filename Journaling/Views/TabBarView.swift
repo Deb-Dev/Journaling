@@ -14,19 +14,19 @@ struct TabBarView: View {
         TabView(selection: $selectedTab) {
             HomeView()
                 .tabItem {
-                    Label("Home", systemImage: "house.fill")
+                    Label("home.title".localized, systemImage: "house.fill") // Updated key
                 }
                 .tag(0)
-            
+
             CalendarView()
                 .tabItem {
-                    Label("Calendar", systemImage: "calendar")
+                    Label("calendar.title".localized, systemImage: "calendar") // Updated key
                 }
                 .tag(1)
-            
+
             ProfileView()
                 .tabItem {
-                    Label("Profile", systemImage: "person.fill")
+                    Label("profile.title".localized, systemImage: "person.fill") // Updated key
                 }
                 .tag(2)
         }

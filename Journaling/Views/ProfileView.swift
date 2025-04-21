@@ -29,9 +29,9 @@ struct ProfileView: View {
                     // Journaling goals
                     if let goals = appState.currentUser?.journalingGoals, !goals.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
-                            Text("My Journaling Goals")
+                            Text("profile.goals.header".localized) // Updated key
                                 .font(.headline)
-                            
+
                             Text(goals)
                                 .font(.body)
                                 .foregroundColor(.secondary)
@@ -50,12 +50,12 @@ struct ProfileView: View {
                             HStack {
                                 Image(systemName: "gear")
                                     .foregroundColor(.accentColor)
-                                
-                                Text("Settings")
+
+                                Text("settings.title".localized) // Updated key
                                     .font(.headline)
-                                
+
                                 Spacer()
-                                
+
                                 Image(systemName: "chevron.right")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
@@ -70,8 +70,8 @@ struct ProfileView: View {
                             HStack {
                                 Image(systemName: "arrow.right.square")
                                     .foregroundColor(.red)
-                                
-                                Text("Log Out")
+
+                                Text("profile.logout.button".localized) // Updated key
                                     .font(.headline)
                                     .foregroundColor(.red)
                             }
@@ -87,7 +87,7 @@ struct ProfileView: View {
                 }
                 .padding(.vertical)
             }
-            .navigationTitle("Profile")
+            .navigationTitle("profile.title".localized) // Updated key
             .sheet(isPresented: $isEditingProfile) {
                 EditProfileView()
             }
@@ -125,7 +125,7 @@ struct ProfileHeaderView: View {
             }
             
             Button(action: onEditProfile) {
-                Text("Edit Profile")
+                Text("profile.edit.button".localized)
                     .font(.subheadline)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 8)
@@ -152,26 +152,26 @@ struct EditProfileView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section(header: Text("Personal Information")) {
-                    TextField("Name", text: $name)
+                Section(header: Text("profile.personalInfo.header".localized)) { // Updated key
+                    TextField("profile.name.placeholder".localized, text: $name) // Updated key
                 }
-                
-                Section(header: Text("Journaling Goals")) {
+
+                Section(header: Text("profile.goals.header".localized)) { // Updated key
                     TextEditor(text: $journalingGoals)
                         .frame(minHeight: 100)
                 }
             }
-            .navigationTitle("Edit Profile")
+            .navigationTitle("profile.edit.title".localized)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
+                    Button("general.cancel".localized) {
                         dismiss()
                     }
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
+                    Button("general.save".localized) {
                         saveProfile()
                     }
                     .disabled(name.isEmpty || isLoading)
@@ -179,9 +179,9 @@ struct EditProfileView: View {
             }
             .alert(isPresented: .constant(!errorMessage.isEmpty)) {
                 Alert(
-                    title: Text("Error"),
+                    title: Text("general.error.title".localized),
                     message: Text(errorMessage),
-                    dismissButton: .default(Text("OK")) {
+                    dismissButton: .default(Text("general.ok".localized)) {
                         errorMessage = ""
                     }
                 )
@@ -225,54 +225,62 @@ struct SettingsView: View {
     
     var body: some View {
         Form {
-            Section(header: Text("Notifications")) {
-                Toggle("Daily Reminders", isOn: $notificationsEnabled)
-                    .onChange(of: notificationsEnabled) { _ in
+            Section(header: Text("settings.notifications.header".localized)) { // Updated key
+                Toggle("settings.notifications.enable.toggle".localized, isOn: $notificationsEnabled) // Updated key
+                    .onChange(of: notificationsEnabled) {
                         updateNotificationSettings()
                     }
-                
+
                 if notificationsEnabled {
-                    DatePicker("Reminder Time", selection: $reminderTime, displayedComponents: .hourAndMinute)
-                        .onChange(of: reminderTime) { _ in
+                    DatePicker("settings.notifications.time.label".localized, selection: $reminderTime, displayedComponents: .hourAndMinute) // Updated key
+                        .onChange(of: reminderTime) {
                             updateNotificationSettings()
                         }
                 }
             }
-            
-            Section(header: Text("Appearance")) {
-                Toggle("Dark Mode", isOn: $prefersDarkMode)
-                    .onChange(of: prefersDarkMode) { _ in
+
+            Section(header: Text("settings.appearance.header".localized)) { // Updated key
+                // TODO: Implement theme picker (System, Light, Dark)
+                Toggle("settings.appearance.theme.dark".localized, isOn: $prefersDarkMode) // Updated key
+                    .onChange(of: prefersDarkMode) {
                         appState.updateThemePreference(darkMode: prefersDarkMode)
                     }
             }
-            
-            Section(header: Text("Security")) {
-                Toggle("Use Face ID / Touch ID", isOn: $useBiometricAuth)
-                    .onChange(of: useBiometricAuth) { _ in
+
+            Section(header: Text("settings.security.header".localized)) { // Updated key
+                Toggle("settings.security.biometrics.toggle".localized, isOn: $useBiometricAuth) // Updated key
+                    .onChange(of: useBiometricAuth) {
                         appState.updateBiometricAuthPreference(enabled: useBiometricAuth)
                     }
             }
-            
-            Section(header: Text("Legal")) {
-                NavigationLink(destination: LegalDocumentView(title: "Privacy Policy", content: privacyPolicyText)) {
-                    Text("Privacy Policy")
+
+            Section(header: Text("settings.legal.header".localized)) { // Updated key
+                NavigationLink(destination: LegalDocumentView(title: "settings.legal.privacyPolicy".localized, content: privacyPolicyText)) { // Updated key
+                    Text("settings.legal.privacyPolicy".localized) // Updated key
                 }
-                
-                NavigationLink(destination: LegalDocumentView(title: "Terms of Service", content: termsOfServiceText)) {
-                    Text("Terms of Service")
+
+                NavigationLink(destination: LegalDocumentView(title: "settings.legal.termsOfService".localized, content: termsOfServiceText)) { // Updated key
+                    Text("settings.legal.termsOfService".localized) // Updated key
                 }
             }
-            
-            Section(header: Text("App Information")) {
+
+            Section(header: Text("settings.account.header".localized)) { // Updated key
+                Button(action: { /* TODO: Show delete confirmation */ }) {
+                    Text("settings.account.delete.button".localized) // Updated key
+                        .foregroundColor(.red)
+                }
+            }
+
+            Section(header: Text("settings.about.header".localized)) { // Added key
                 HStack {
-                    Text("Version")
+                    Text("settings.about.version".localized) // Added key
                     Spacer()
-                    Text("1.0.0")
+                    Text(Bundle.main.appVersion) // Use helper extension
                         .foregroundColor(.secondary)
                 }
             }
         }
-        .navigationTitle("Settings")
+        .navigationTitle("settings.title".localized) // Updated key
         .onAppear {
             if let user = appState.currentUser {
                 notificationsEnabled = user.notificationsEnabled
@@ -292,13 +300,13 @@ struct SettingsView: View {
 struct LegalDocumentView: View {
     let title: String
     let content: String
-    
+
     var body: some View {
         ScrollView {
             Text(content)
                 .padding()
         }
-        .navigationTitle(title)
+        .navigationTitle(title.localized) // Localize the title passed in
     }
 }
 
@@ -405,5 +413,12 @@ struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileView()
             .environmentObject(AppState())
+    }
+}
+
+// Helper to get app version
+extension Bundle {
+    var appVersion: String {
+        return infoDictionary?["CFBundleShortVersionString"] as? String ?? "N/A"
     }
 }

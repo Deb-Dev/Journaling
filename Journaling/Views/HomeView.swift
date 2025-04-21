@@ -35,7 +35,7 @@ struct HomeView: View {
                             
                             // Recent Entries
                             VStack(alignment: .leading) {
-                                Text("Recent Entries")
+                                Text("home.recentEntries.title".localized)
                                     .font(.headline)
                                     .padding(.horizontal)
                                 
@@ -43,7 +43,7 @@ struct HomeView: View {
                                     EntryRowView(entry: entry)
                                         .contentShape(Rectangle())
                                         .onTapGesture {
-                                            selectedEntryId = entry.id
+                                            selectedEntryId = entry.id ?? ""
                                             isShowingEntryDetail = true
                                         }
                                 }
@@ -53,12 +53,13 @@ struct HomeView: View {
                     }
                 }
             }
-            .navigationTitle("Reflect")
+            .navigationTitle("home.title".localized)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { isShowingNewEntrySheet = true }) {
                         Image(systemName: "plus")
                     }
+                    .accessibilityLabel(Text("home.newEntry.button".localized))
                 }
             }
             .sheet(isPresented: $isShowingNewEntrySheet) {
@@ -78,9 +79,9 @@ struct HomeView: View {
             }
             .alert(isPresented: .constant(!errorMessage.isEmpty)) {
                 Alert(
-                    title: Text("Error"),
+                    title: Text("general.error.title".localized),
                     message: Text(errorMessage),
-                    dismissButton: .default(Text("OK")) {
+                    dismissButton: .default(Text("general.ok".localized)) {
                         errorMessage = ""
                     }
                 )
@@ -116,16 +117,16 @@ struct LoadingView: View {
     var body: some View {
         VStack {
             Spacer()
-            
+
             ProgressView()
                 .progressViewStyle(CircularProgressViewStyle())
                 .scaleEffect(1.5)
-            
-            Text("Loading your journal entries...")
+
+            Text("home.loading.message".localized)
                 .font(.headline)
                 .foregroundColor(.secondary)
                 .padding(.top, 20)
-            
+
             Spacer()
         }
     }
@@ -145,11 +146,11 @@ struct EmptyStateView: View {
                 .frame(width: 80, height: 80)
                 .foregroundColor(.accentColor.opacity(0.6))
             
-            Text("Your Journal Awaits")
+            Text("home.emptyState.title".localized)
                 .font(.title2)
                 .fontWeight(.bold)
             
-            Text("Start documenting your thoughts and feelings by creating your first journal entry.")
+            Text("home.emptyState.message".localized)
                 .font(.body)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -159,8 +160,8 @@ struct EmptyStateView: View {
                 HStack {
                     Image(systemName: "plus.circle.fill")
                         .font(.headline)
-                    
-                    Text("Create Your First Entry")
+
+                    Text("home.createFirstEntry.button".localized)
                         .font(.headline)
                 }
                 .padding()
@@ -180,31 +181,31 @@ struct EmptyStateView: View {
 // MARK: - Stats Card View
 struct StatsCardView: View {
     let entryCount: Int
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Journal Stats")
+            Text("home.stats.title".localized)
                 .font(.headline)
-            
+
             HStack(spacing: 25) {
                 StatItemView(
                     icon: "book.fill",
                     value: "\(entryCount)",
-                    label: "Total Entries"
+                    label: "home.stats.totalEntries".localized
                 )
                 
                 // Calculate streak based on entries (in a real app)
                 StatItemView(
                     icon: "flame.fill",
                     value: "3",
-                    label: "Day Streak"
+                    label: "home.stats.dayStreak".localized
                 )
                 
                 // Calculate most common mood (in a real app)
                 StatItemView(
                     icon: "face.smiling",
                     value: "😌",
-                    label: "Common Mood"
+                    label: "home.stats.commonMood".localized
                 )
             }
             .padding(.vertical, 8)
@@ -243,7 +244,7 @@ struct StatItemView: View {
 // MARK: - Entry Row View
 struct EntryRowView: View {
     let entry: JournalEntry
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -251,7 +252,7 @@ struct EntryRowView: View {
                     Text(entry.createdAt.formatted())
                         .font(.subheadline)
                         .foregroundColor(.secondary)
-                    
+
                     if entry.tags.count > 0 {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack {

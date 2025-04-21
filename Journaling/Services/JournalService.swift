@@ -8,11 +8,14 @@
 import Foundation
 import Combine
 
-enum JournalError: Error {
+enum JournalError: Error, LocalizedError {
     case unauthorized
     case networkError
     case notFound
     case unknown
+    case decodingError
+    case databaseError(String)
+    case invalidData(String)
     
     var message: String {
         switch self {
@@ -22,9 +25,19 @@ enum JournalError: Error {
             return "Network error. Please check your connection and try again."
         case .notFound:
             return "The requested journal entry could not be found."
+        case .decodingError:
+            return "There was an error processing the data. Please try again."
+        case .databaseError(let details):
+            return "Database error: \(details)"
+        case .invalidData(let details):
+            return "Invalid data: \(details)"
         case .unknown:
             return "An unknown error occurred. Please try again later."
         }
+    }
+    
+    var errorDescription: String? {
+        return message
     }
 }
 
@@ -61,7 +74,7 @@ class MockJournalService: JournalServiceProtocol {
                 // Not every day has an entry
                 if day % 2 == 0 || arc4random_uniform(2) == 1 {
                     let entry = JournalEntry(
-                        userId: userId,
+                        id: nil, userId: userId,
                         content: "Sample journal entry for \(dateFormatter.string(from: date)). This is what a longer journal entry might look like with several sentences of content. It could include thoughts, feelings, and reflections on the day.",
                         createdAt: date,
                         updatedAt: date,

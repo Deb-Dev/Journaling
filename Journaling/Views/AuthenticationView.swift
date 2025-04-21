@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import UIKit
 
 enum AuthenticationState {
     case welcome
@@ -59,11 +60,11 @@ struct WelcomeView: View {
                     .frame(width: 100, height: 100)
                     .foregroundColor(.accentColor)
                 
-                Text("Reflect")
+                Text("welcome.title".localized)
                     .font(.system(size: 40, weight: .bold))
                     .foregroundColor(.accentColor)
                 
-                Text("Your Daily Journal Companion")
+                Text("welcome.subtitle".localized)
                     .font(.headline)
                     .foregroundColor(.secondary)
             }
@@ -72,28 +73,27 @@ struct WelcomeView: View {
             
             // Benefits
             VStack(spacing: 15) {
-                BenefitRow(icon: "calendar", text: "Track your thoughts daily")
-                BenefitRow(icon: "chart.bar.fill", text: "Monitor your mood patterns")
-                BenefitRow(icon: "tag.fill", text: "Organize with custom tags")
-                BenefitRow(icon: "bell.fill", text: "Set reminders to journal")
+                BenefitRow(icon: "pencil.and.outline", text: "welcome.feature1.title".localized)
+                BenefitRow(icon: "face.smiling", text: "welcome.feature2.title".localized)
+                BenefitRow(icon: "calendar.badge.clock", text: "welcome.feature3.title".localized)
             }
             .padding(.horizontal)
-            
+
             Spacer()
-            
+
             // Action Buttons
             VStack(spacing: 16) {
                 Button(action: onLoginTapped) {
-                    Text("Log In")
+                    Text("welcome.login.button".localized)
                         .primaryButtonStyle()
                 }
-                .accessibilityButton(label: "Log In", hint: "Tap to log in to your account")
-                
+                .accessibilityButton(label: "welcome.login.button".localized, hint: "Tap to log in to your account")
+
                 Button(action: onSignupTapped) {
-                    Text("Create Account")
+                    Text("welcome.signup.button".localized)
                         .secondaryButtonStyle()
                 }
-                .accessibilityButton(label: "Create Account", hint: "Tap to create a new account")
+                .accessibilityButton(label: "welcome.signup.button".localized, hint: "Tap to create a new account")
             }
             .padding(.horizontal, 30)
             
@@ -150,22 +150,23 @@ struct LoginView: View {
                         .font(.title2)
                         .foregroundColor(.accentColor)
                 }
+                .accessibilityLabel(Text("general.back"))
                 
                 Spacer()
             }
             .padding(.horizontal)
-            
-            Text("Welcome Back")
+
+            Text("login.title".localized)
                 .font(.system(size: 28, weight: .bold))
-            
-            Text("Log in to continue your journaling journey")
+
+            Text("login.subtitle".localized)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.bottom, 20)
             
             VStack(spacing: 16) {
-                TextField("Email", text: $email)
+                TextField("login.email.placeholder".localized, text: $email)
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
@@ -173,7 +174,7 @@ struct LoginView: View {
                     .textFieldStyle()
                     .submitLabel(.next)
                 
-                SecureField("Password", text: $password)
+                SecureField("login.password.placeholder".localized, text: $password)
                     .focused($focusedField, equals: .password)
                     .textFieldStyle()
                     .submitLabel(.go)
@@ -189,7 +190,7 @@ struct LoginView: View {
             HStack {
                 Spacer()
                 Button(action: onForgotPassword) {
-                    Text("Forgot Password?")
+                    Text("login.forgotPassword.button".localized)
                         .font(.subheadline)
                         .foregroundColor(.accentColor)
                 }
@@ -201,7 +202,7 @@ struct LoginView: View {
                     ProgressView()
                         .tint(.white)
                 } else {
-                    Text("Log In")
+                    Text("login.login.button".localized)
                 }
             }
             .disabled(isLoading || !isValidInput)
@@ -210,14 +211,15 @@ struct LoginView: View {
             .padding(.top, 10)
             
             Spacer()
-            
+
             HStack {
-                Text("Don't have an account?")
+                // We could add this to Localizable.strings but it's not a critical user-facing string
+                Text("login.signup.prompt".localized)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
-                
+
                 Button(action: onCreateAccount) {
-                    Text("Sign Up")
+                    Text("login.signup.link".localized)
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .foregroundColor(.accentColor)
@@ -293,27 +295,28 @@ struct SignupView: View {
                         .font(.title2)
                         .foregroundColor(.accentColor)
                 }
+                .accessibilityLabel(Text("general.back".localized))
                 
                 Spacer()
             }
             .padding(.horizontal)
-            
-            Text("Create Account")
+
+            Text("signup.title".localized)
                 .font(.system(size: 28, weight: .bold))
-            
-            Text("Start your journaling journey today")
+
+            Text("signup.subtitle".localized)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.bottom, 10)
             
             VStack(spacing: 16) {
-                TextField("Full Name", text: $name)
+                TextField("signup.name.placeholder".localized, text: $name)
                     .focused($focusedField, equals: .name)
                     .textFieldStyle()
                     .submitLabel(.next)
                 
-                TextField("Email", text: $email)
+                TextField("signup.email.placeholder".localized, text: $email)
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
@@ -321,12 +324,12 @@ struct SignupView: View {
                     .textFieldStyle()
                     .submitLabel(.next)
                 
-                SecureField("Password", text: $password)
+                SecureField("signup.password.placeholder".localized, text: $password)
                     .focused($focusedField, equals: .password)
                     .textFieldStyle()
                     .submitLabel(.next)
                 
-                SecureField("Confirm Password", text: $confirmPassword)
+                SecureField("signup.confirmPassword.placeholder".localized, text: $confirmPassword)
                     .focused($focusedField, equals: .confirmPassword)
                     .textFieldStyle()
                     .submitLabel(.go)
@@ -344,7 +347,7 @@ struct SignupView: View {
                     ProgressView()
                         .tint(.white)
                 } else {
-                    Text("Create Account")
+                    Text("signup.signup.button".localized)
                 }
             }
             .disabled(isLoading || !isValidInput)
@@ -353,14 +356,15 @@ struct SignupView: View {
             .padding(.top, 10)
             
             Spacer()
-            
+
             HStack {
-                Text("Already have an account?")
+                // We could add this to Localizable.strings but it's not a critical user-facing string
+                Text("signup.login.prompt".localized)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
-                
+
                 Button(action: onLoginTapped) {
-                    Text("Log In")
+                    Text("signup.login.link".localized)
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .foregroundColor(.accentColor)
@@ -437,44 +441,44 @@ struct ForgotPasswordView: View {
                         .font(.title2)
                         .foregroundColor(.accentColor)
                 }
+                .accessibilityLabel(Text("general.back".localized))
                 
                 Spacer()
             }
             .padding(.horizontal)
-            
-            Text("Reset Password")
+
+            Text("forgotPassword.title".localized)
                 .font(.system(size: 28, weight: .bold))
-            
+
             if isSuccess {
                 VStack(spacing: 20) {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.system(size: 60))
                         .foregroundColor(.green)
-                    
-                    Text("Password Reset Email Sent")
-                        .font(.headline)
-                    
-                    Text("Check your email for instructions on how to reset your password.")
+
+                    Text("forgotPassword.success.message".localized)
+
+                    Text("forgotPassword.success.detail".localized)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
-                    
+
                     Button(action: onBackTapped) {
-                        Text("Back to Login")
+                        Text("forgotPassword.backToLogin.button".localized)
                             .primaryButtonStyle()
                     }
                     .padding(.horizontal, 30)
                     .padding(.top, 10)
                 }
             } else {
-                Text("Enter your email address and we'll send you instructions to reset your password")
+                Text("forgotPassword.instructions".localized)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 10)
-                
-                TextField("Email", text: $email)
+
+                TextField("forgotPassword.email.placeholder".localized, text: $email)
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
@@ -493,7 +497,7 @@ struct ForgotPasswordView: View {
                         ProgressView()
                             .tint(.white)
                     } else {
-                        Text("Reset Password")
+                        Text("forgotPassword.sendReset.button".localized)
                     }
                 }
                 .disabled(isLoading || !email.isValidEmail)
