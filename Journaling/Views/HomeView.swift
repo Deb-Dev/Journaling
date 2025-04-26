@@ -18,7 +18,7 @@ struct HomeView: View {
     @State private var selectedEntryId: String = ""
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $appState.router.path) {
             VStack {
                 if isLoading && entries.isEmpty {
                     LoadingView()
@@ -39,13 +39,15 @@ struct HomeView: View {
                                     .font(.headline)
                                     .padding(.horizontal)
                                 
-                                ForEach(entries.prefix(5)) { entry in
-                                    EntryRowView(entry: entry)
-                                        .contentShape(Rectangle())
-                                        .onTapGesture {
-                                            selectedEntryId = entry.id ?? ""
-                                            isShowingEntryDetail = true
-                                        }
+                                LazyVStack(spacing: 8) {
+                                    ForEach(entries.prefix(5)) { entry in
+                                        EntryRowView(entry: entry)
+                                            .contentShape(Rectangle())
+                                            .onTapGesture {
+                                                selectedEntryId = entry.id ?? ""
+                                                isShowingEntryDetail = true
+                                            }
+                                    }
                                 }
                             }
                         }
@@ -56,14 +58,28 @@ struct HomeView: View {
             .navigationTitle("home.title".localized)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { isShowingNewEntrySheet = true }) {
+                    Button(action: { 
+                        isShowingNewEntrySheet = true
+                        appState.router.showNewEntrySheet()
+                    }) {
                         Image(systemName: "plus")
                     }
                     .accessibilityLabel(Text("home.newEntry.button".localized))
                 }
             }
-            .sheet(isPresented: $isShowingNewEntrySheet) {
+            .sheet(isPresented: $isShowingNewEntrySheet, onDismiss: {
+                appState.router.dismissSheet()
+            }) {
                 JournalEntryEditorView(onSave: { newEntry in
+                    fetchEntries()
+                    isShowingNewEntrySheet = false
+                })
+            }
+            .navigationDestination(for: JournalEntry.self) { entry in
+                JournalEntryDetailView(entry: entry, onDelete: {
+                    fetchEntries()
+                    appState.router.navigateBack()
+                }, onUpdate: {
                     fetchEntries()
                 })
             }
@@ -77,20 +93,12 @@ struct HomeView: View {
                     })
                 }
             }
-            .alert(isPresented: .constant(!errorMessage.isEmpty)) {
-                Alert(
-                    title: Text("general.error.title".localized),
-                    message: Text(errorMessage),
-                    dismissButton: .default(Text("general.ok".localized)) {
-                        errorMessage = ""
-                    }
-                )
-            }
+            .errorAlert(errorMessage: $errorMessage)
             .onAppear {
                 fetchEntries()
             }
         }
-    }
+    }  
     
     private func fetchEntries() {
         isLoading = true
@@ -99,12 +107,12 @@ struct HomeView: View {
         appState.fetchEntries()
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
-                isLoading = false
+                self.isLoading = false
                 if case .failure(let error) = completion {
-                    errorMessage = error.message
+                    self.errorMessage = error.message
                 }
             }, receiveValue: { fetchedEntries in
-                entries = fetchedEntries
+                self.entries = fetchedEntries
             })
             .store(in: &cancellables)
     }
@@ -282,10 +290,7 @@ struct EntryRowView: View {
                 .font(.body)
                 .padding(.top, 2)
         }
-        .padding()
-        .background(Color(.secondarySystemBackground))
-        .cornerRadius(12)
-        .padding(.horizontal)
+        .standardCard()
     }
 }
 

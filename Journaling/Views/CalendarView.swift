@@ -39,19 +39,20 @@ struct CalendarView: View {
                             .font(.headline)
                             .padding(.horizontal)
 
-                        List {
-                            ForEach(dateEntries) { entry in
-                                EntryListItemView(entry: entry)
-                                    .contentShape(Rectangle())
-                                    .onTapGesture {
-                                        selectedEntryId = entry.id ?? ""
-                                        isShowingEntryDetail = true
-                                    }
-                                    .listRowSeparator(.hidden)
-                                    .listRowInsets(EdgeInsets(top: 8, leading: 20, bottom: 8, trailing: 20))
+                        ScrollView {
+                            LazyVStack(spacing: 8) {
+                                ForEach(dateEntries) { entry in
+                                    EntryListItemView(entry: entry)
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            selectedEntryId = entry.id ?? ""
+                                            isShowingEntryDetail = true
+                                        }
+                                        .padding(.horizontal, 20)
+                                        .padding(.vertical, 8)
+                                }
                             }
                         }
-                        .listStyle(.plain)
                     } else {
                         VStack {
                             Spacer()
@@ -93,15 +94,7 @@ struct CalendarView: View {
                     })
                 }
             }
-            .alert(isPresented: .constant(!errorMessage.isEmpty)) {
-                Alert(
-                    title: Text("general.error.title".localized), // Updated key
-                    message: Text(errorMessage),
-                    dismissButton: .default(Text("general.ok".localized)) { // Updated key
-                        errorMessage = ""
-                    }
-                )
-            }
+            .errorAlert(errorMessage: $errorMessage)
             .onAppear {
                 fetchEntries()
             }

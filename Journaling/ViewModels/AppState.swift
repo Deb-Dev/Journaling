@@ -16,6 +16,9 @@ class AppState: ObservableObject {
     private let authService: AuthServiceProtocol
     private let journalService: JournalServiceProtocol
     
+    // Navigation router
+    @Published var router = NavigationRouter()
+    
     // Cancellables for Combine subscriptions
     private var cancellables = Set<AnyCancellable>()
     

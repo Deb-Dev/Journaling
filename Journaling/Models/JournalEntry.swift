@@ -41,7 +41,7 @@ enum Mood: String, CaseIterable, Codable, Identifiable {
     }
 }
 
-struct JournalEntry: Codable, Identifiable {
+struct JournalEntry: Codable, Identifiable, Hashable {
     @DocumentID var id: String?
     
     var userId: String

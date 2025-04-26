@@ -112,15 +112,7 @@ struct JournalEntryDetailView: View {
         } message: {
             Text("entryDetail.deleteConfirm.message".localized) // Updated key
         }
-        .alert(isPresented: .constant(!errorMessage.isEmpty)) {
-            Alert(
-                title: Text("general.error.title".localized),
-                message: Text(errorMessage),
-                dismissButton: .default(Text("general.ok".localized)) {
-                    errorMessage = ""
-                }
-            )
-        }
+        .errorAlert(errorMessage: $errorMessage)
     }
     
     private func deleteEntry() {
@@ -129,13 +121,13 @@ struct JournalEntryDetailView: View {
         
         appState.deleteEntry(withId: entry.id ?? "")
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                isLoading = false
+            .sink(receiveCompletion: {  completion in
+                self.isLoading = false
                 if case .failure(let error) = completion {
-                    errorMessage = error.message
+                    self.errorMessage = error.message
                 }
-            }, receiveValue: { _ in
-                onDelete()
+            }, receiveValue: {  _ in
+                self.onDelete()
             })
             .store(in: &cancellables)
     }

@@ -43,6 +43,34 @@ final class FirestoreJournalService: JournalServiceProtocol {
     // MARK: - JournalServiceProtocol Implementation
     
     func fetchEntries(forUserId userId: String) -> AnyPublisher<[JournalEntry], JournalError> {
+        // Use non-realtime fetch with retry capability
+        return entriesCollection()
+            .whereField("userId", isEqualTo: userId)
+            .order(by: "createdAt", descending: true)
+            .getDocumentsPublisher(maxRetries: 2)
+            .mapError { error -> JournalError in
+                print("Error fetching entries: \(error.localizedDescription)")
+                return .databaseError(error.localizedDescription)
+            }
+            .flatMap { (snapshot) -> AnyPublisher<[JournalEntry], JournalError> in
+                do {
+                    let entries = try snapshot.documents.compactMap { document -> JournalEntry? in
+                        try document.data(as: JournalEntry.self)
+                    }
+                    return Just(entries)
+                        .setFailureType(to: JournalError.self)
+                        .eraseToAnyPublisher()
+                } catch {
+                    print("Error decoding entries: \(error.localizedDescription)")
+                    return Fail(error: .decodingError)
+                        .eraseToAnyPublisher()
+                }
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    /// Fetches entries with realtime updates
+    func observeEntries(forUserId userId: String) -> AnyPublisher<[JournalEntry], JournalError> {
         return Future<[JournalEntry], JournalError> { [weak self] promise in
             guard let self = self else {
                 promise(.failure(.unknown))
