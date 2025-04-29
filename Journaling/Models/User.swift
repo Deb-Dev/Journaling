@@ -34,4 +34,17 @@ struct User: Codable, Identifiable {
         self.useBiometricAuth = useBiometricAuth
         self.prefersDarkMode = prefersDarkMode
     }
+    
+    /// Converts the User object to a dictionary for Firestore
+    func asDictionary() throws -> [String: Any] {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .millisecondsSince1970
+        
+        let data = try encoder.encode(self)
+        guard let dictionary = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw NSError(domain: "UserError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to convert user to dictionary"])
+        }
+        
+        return dictionary
+    }
 }

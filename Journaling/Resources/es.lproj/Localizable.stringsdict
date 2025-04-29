@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Calendar entries pluralization -->
+    <key>calendar.entries</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@entries@</string>
+        <key>entries</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>Sin Entradas</string>
+            <key>one</key>
+            <string>%d Entrada</string>
+            <key>other</key>
+            <string>%d Entradas</string>
+        </dict>
+    </dict>
+    
+    <!-- Journal streak pluralization -->
+    <key>home.stats.dayStreak</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@days@</string>
+        <key>days</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>Sin Racha</string>
+            <key>one</key>
+            <string>Racha de %d Día</string>
+            <key>other</key>
+            <string>Racha de %d Días</string>
+        </dict>
+    </dict>
+    
+    <!-- Total entries pluralization -->
+    <key>home.stats.totalEntries</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@entries@</string>
+        <key>entries</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>Sin Entradas</string>
+            <key>one</key>
+            <string>%d Entrada</string>
+            <key>other</key>
+            <string>%d Entradas</string>
+        </dict>
+    </dict>
+</dict>
+</plist>

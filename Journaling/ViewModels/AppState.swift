@@ -9,6 +9,8 @@ import Foundation
 import Combine
 import SwiftUI
 import FirebaseFirestore
+import FirebaseAuth
+import UserNotifications
 
 /// Main state container for the app
 class AppState: ObservableObject {
@@ -36,9 +38,9 @@ class AppState: ObservableObject {
         currentUser = authService.getCurrentUser()
         isAuthenticated = currentUser != nil
         
-        // For demo purpose - set this to false to skip onboarding
-        // In real app, we would check if this is first launch
-        isOnboarding = UserDefaults.standard.object(forKey: "hasCompletedOnboarding") == nil
+        // Check if onboarding has been completed
+        isOnboarding = !UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
+        print("Is onboarding needed: \(isOnboarding), UserDefaults value: \(UserDefaults.standard.bool(forKey: "hasCompletedOnboarding"))")
         
         // Subscribe to authentication state changes
         if let firebaseAuthService = authService as? FirebaseAuthService {
@@ -52,6 +54,11 @@ class AppState: ObservableObject {
                     // If this is a new user, show onboarding
                     if user != nil && user?.journalingGoals.isEmpty ?? true {
                         self.isOnboarding = true
+                    }
+                    
+                    // If user is logged in, restore their notification settings
+                    if let user = user, user.notificationsEnabled {
+                        self.restoreNotificationSettings(user: user)
                     }
                 }
                 .store(in: &cancellables)
@@ -109,20 +116,44 @@ class AppState: ObservableObject {
         updatedUser.name = name
         updatedUser.journalingGoals = journalingGoals
         
-        // In a real app, we would call an API to update the user profile
-        // For demo, we'll just update the local state
-        return Future<Void, JournalError> { [weak self] promise in
-            DispatchQueue.main.async {
+        // Update both locally and in Firestore
+        return updateUserInFirestore(updatedUser)
+            .handleEvents(receiveOutput: { [weak self] _ in
                 self?.currentUser = updatedUser
-                promise(.success(()))
-            }
+            })
+            .eraseToAnyPublisher()
+    }
+    
+    /// Updates user data in Firestore
+    private func updateUserInFirestore(_ user: User) -> AnyPublisher<Void, JournalError> {
+//        guard let userId = user.id else {
+//            return Fail(error: JournalError.unauthorized).eraseToAnyPublisher()
+//        }
+        
+        let db = Firestore.firestore()
+        let userRef = db.collection("users").document(user.id)
+        
+        do {
+            let userData = try user.asDictionary()
+            
+            return userRef.setDataPublisher(userData)
+                .mapError { error -> JournalError in
+                    print("Error updating user profile: \(error.localizedDescription)")
+                    return .databaseError(error.localizedDescription)
+                }
+                .map { _ in () }
+                .eraseToAnyPublisher()
+        } catch {
+            return Fail(error: JournalError.invalidData(error.localizedDescription))
+                .eraseToAnyPublisher()
         }
-        .eraseToAnyPublisher()
     }
     
     func completeOnboarding() {
         isOnboarding = false
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
+        UserDefaults.standard.synchronize() // Force synchronize to ensure value is saved
+        print("Onboarding completed. UserDefaults value set to: \(UserDefaults.standard.bool(forKey: "hasCompletedOnboarding"))")
     }
     
     // MARK: - Settings Methods
@@ -131,21 +162,149 @@ class AppState: ObservableObject {
         guard var user = currentUser else { return }
         user.notificationsEnabled = enabled
         user.reminderTime = reminderTime
+        
+        // Update user locally first for responsive UI
         currentUser = user
         
-        // In a real app, save to backend and update local notifications
+        // Persist changes to Firestore
+        updateUserInFirestore(user)
+            .sink(
+                receiveCompletion: { completion in
+                    if case .failure(let error) = completion {
+                        print("Error updating notification preferences: \(error.message)")
+                    }
+                },
+                receiveValue: { _ in }
+            )
+            .store(in: &cancellables)
+        
+        // Schedule or cancel notifications based on user preference
+        if enabled {
+            scheduleJournalReminder(at: reminderTime)
+        } else {
+            cancelAllNotifications()
+        }
     }
     
     func updateThemePreference(darkMode: Bool) {
         guard var user = currentUser else { return }
         user.prefersDarkMode = darkMode
+        
+        // Update local state
         currentUser = user
+        
+        // Persist to Firestore
+        updateUserInFirestore(user)
+            .sink(
+                receiveCompletion: { completion in
+                    if case .failure(let error) = completion {
+                        print("Error updating theme preference: \(error.message)")
+                    }
+                },
+                receiveValue: { _ in }
+            )
+            .store(in: &cancellables)
     }
     
     func updateBiometricAuthPreference(enabled: Bool) {
         guard var user = currentUser else { return }
         user.useBiometricAuth = enabled
+        
+        // Update local state
         currentUser = user
+        
+        // Persist to Firestore
+        updateUserInFirestore(user)
+            .sink(
+                receiveCompletion: { completion in
+                    if case .failure(let error) = completion {
+                        print("Error updating biometric auth preference: \(error.message)")
+                    }
+                },
+                receiveValue: { _ in }
+            )
+            .store(in: &cancellables)
+    }
+    
+    /// Restores notification settings when the app is launched or user logs in
+    private func restoreNotificationSettings(user: User) {
+        if user.notificationsEnabled {
+            print("Restoring notification at time: \(user.reminderTime)")
+            scheduleJournalReminder(at: user.reminderTime)
+        } else {
+            cancelAllNotifications()
+        }
+    }
+    
+    /// Schedules a daily journal reminder notification at the specified time
+    private func scheduleJournalReminder(at time: Date) {
+        let center = UNUserNotificationCenter.current()
+        
+        // First, clear existing notifications to avoid duplicates
+        center.removeAllPendingNotificationRequests()
+        
+        // Request notification permission if not already granted
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if !granted {
+                print("Notification permission denied")
+                return
+            }
+            
+            if let error = error {
+                print("Error requesting notification permission: \(error.localizedDescription)")
+                return
+            }
+            
+            // Create notification content
+            let content = UNMutableNotificationContent()
+            content.title = "Journaling Reminder".localized
+            content.body = "Take a moment to reflect on your day by writing in your journal.".localized
+            content.sound = .default
+            content.badge = 1
+            
+            // Extract hour and minute from the reminder time
+            let calendar = Calendar.current
+            let hour = calendar.component(.hour, from: time)
+            let minute = calendar.component(.minute, from: time)
+            
+            // Create a daily trigger at the specified time
+            var dateComponents = DateComponents()
+            dateComponents.hour = hour
+            dateComponents.minute = minute
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+            
+            // Create the request
+            let request = UNNotificationRequest(
+                identifier: "journalReminder",
+                content: content,
+                trigger: trigger
+            )
+            
+            // Schedule the notification
+            center.add(request) { error in
+                if let error = error {
+                    print("Error scheduling notification: \(error.localizedDescription)")
+                } else {
+                    print("Successfully scheduled notification for \(hour):\(minute)")
+                    
+                    // For debugging: List all pending notifications
+                    center.getPendingNotificationRequests { requests in
+                        print("Pending notifications: \(requests.count)")
+                        for request in requests {
+                            if let trigger = request.trigger as? UNCalendarNotificationTrigger {
+                                print("Notification scheduled at: \(trigger.dateComponents)")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    /// Cancels all pending notifications
+    private func cancelAllNotifications() {
+        let center = UNUserNotificationCenter.current()
+        center.removeAllPendingNotificationRequests()
     }
 }
 

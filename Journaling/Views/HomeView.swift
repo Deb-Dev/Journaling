@@ -17,6 +17,15 @@ struct HomeView: View {
     @State private var isShowingEntryDetail = false
     @State private var selectedEntryId: String = ""
     
+    // Computed properties for stats
+    private var dayStreak: Int {
+        calculateDayStreak(from: entries)
+    }
+    
+    private var commonMood: Mood? {
+        calculateCommonMood(from: entries)
+    }
+    
     var body: some View {
         NavigationStack(path: $appState.router.path) {
             VStack {
@@ -30,7 +39,11 @@ struct HomeView: View {
                     ScrollView {
                         VStack(spacing: 16) {
                             // Stats Card
-                            StatsCardView(entryCount: entries.count)
+                            StatsCardView(
+                                entryCount: entries.count,
+                                dayStreak: dayStreak,
+                                commonMood: commonMood
+                            )
                                 .padding(.horizontal)
                             
                             // Recent Entries
@@ -117,6 +130,65 @@ struct HomeView: View {
             .store(in: &cancellables)
     }
     
+    // MARK: - Stats Calculation Methods
+    
+    /// Calculates the current day streak (consecutive days with entries)
+    private func calculateDayStreak(from entries: [JournalEntry]) -> Int {
+        guard !entries.isEmpty else { return 0 }
+        
+        // Sort entries by date (newest first)
+        let sortedEntries = entries.sorted { $0.createdAt > $1.createdAt }
+        
+        // Group entries by day
+        let calendar = Calendar.current
+        var entriesByDay: [Date: Bool] = [:]
+        
+        for entry in sortedEntries {
+            let components = calendar.dateComponents([.year, .month, .day], from: entry.createdAt)
+            if let date = calendar.date(from: components) {
+                entriesByDay[date] = true
+            }
+        }
+        
+        // Find the most recent entry date
+        guard let mostRecentEntryDate = entriesByDay.keys.max() else { return 0 }
+        
+        // If the most recent entry is not from today or yesterday, streak is broken
+        let today = calendar.startOfDay(for: Date())
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: today)!
+        
+        if !entriesByDay.keys.contains(today) && !entriesByDay.keys.contains(yesterday) {
+            return 0
+        }
+        
+        // Count consecutive days
+        var streak = 0
+        var currentDate = mostRecentEntryDate
+        
+        while entriesByDay[currentDate] == true {
+            streak += 1
+            guard let previousDay = calendar.date(byAdding: .day, value: -1, to: currentDate) else { break }
+            currentDate = previousDay
+        }
+        
+        return streak
+    }
+    
+    /// Calculates the most common mood across all entries
+    private func calculateCommonMood(from entries: [JournalEntry]) -> Mood? {
+        guard !entries.isEmpty else { return nil }
+        
+        // Count occurrences of each mood
+        var moodCounts: [Mood: Int] = [:]
+        
+        for entry in entries {
+            moodCounts[entry.mood, default: 0] += 1
+        }
+        
+        // Find the mood with the highest count
+        return moodCounts.max(by: { $0.value < $1.value })?.key
+    }
+    
     @State private var cancellables = Set<AnyCancellable>()
 }
 
@@ -189,6 +261,8 @@ struct EmptyStateView: View {
 // MARK: - Stats Card View
 struct StatsCardView: View {
     let entryCount: Int
+    let dayStreak: Int
+    let commonMood: Mood?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -199,20 +273,18 @@ struct StatsCardView: View {
                 StatItemView(
                     icon: "book.fill",
                     value: "\(entryCount)",
-                    label: "home.stats.totalEntries".localized
+                    label: LocalizationManager.pluralString("home.stats.totalEntries", count: entryCount)
                 )
                 
-                // Calculate streak based on entries (in a real app)
                 StatItemView(
                     icon: "flame.fill",
-                    value: "3",
-                    label: "home.stats.dayStreak".localized
+                    value: "\(dayStreak)",
+                    label: "home.stats.dayStreak".pluralized(count: dayStreak)
                 )
                 
-                // Calculate most common mood (in a real app)
                 StatItemView(
                     icon: "face.smiling",
-                    value: "😌",
+                    value: commonMood?.emoji ?? "😐",
                     label: "home.stats.commonMood".localized
                 )
             }
@@ -236,9 +308,16 @@ struct StatItemView: View {
                     .font(.subheadline)
                     .foregroundColor(.accentColor)
                 
-                Text(value)
-                    .font(.title3)
-                    .fontWeight(.bold)
+                // Ensure proper rendering of emoji by using a Text view directly
+                if value.containsEmoji {
+                    Text(value)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                } else {
+                    Text(value)
+                        .font(.title3)
+                        .fontWeight(.bold)
+                }
             }
             
             Text(label)

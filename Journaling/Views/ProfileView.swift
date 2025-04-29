@@ -218,81 +218,69 @@ struct EditProfileView: View {
 // MARK: - Settings View
 struct SettingsView: View {
     @EnvironmentObject private var appState: AppState
-    @State private var notificationsEnabled: Bool = true
-    @State private var reminderTime: Date = Date()
-    @State private var useBiometricAuth: Bool = false
-    @State private var prefersDarkMode: Bool = false
+    @StateObject private var viewModel = SettingsViewModel()
     
     var body: some View {
         Form {
-            Section(header: Text("settings.notifications.header".localized)) { // Updated key
-                Toggle("settings.notifications.enable.toggle".localized, isOn: $notificationsEnabled) // Updated key
-                    .onChange(of: notificationsEnabled) {
-                        updateNotificationSettings()
-                    }
-
-                if notificationsEnabled {
-                    DatePicker("settings.notifications.time.label".localized, selection: $reminderTime, displayedComponents: .hourAndMinute) // Updated key
-                        .onChange(of: reminderTime) {
-                            updateNotificationSettings()
-                        }
+            Section(header: Text("settings.notifications.header".localized)) {
+                Toggle("settings.notifications.enable.toggle".localized, isOn: $viewModel.notificationsEnabled)
+                
+                if viewModel.notificationsEnabled {
+                    DatePicker("settings.notifications.time.label".localized, 
+                              selection: $viewModel.reminderTime, 
+                              displayedComponents: .hourAndMinute)
                 }
             }
 
-            Section(header: Text("settings.appearance.header".localized)) { // Updated key
-                // TODO: Implement theme picker (System, Light, Dark)
-                Toggle("settings.appearance.theme.dark".localized, isOn: $prefersDarkMode) // Updated key
-                    .onChange(of: prefersDarkMode) {
-                        appState.updateThemePreference(darkMode: prefersDarkMode)
-                    }
+            Section(header: Text("settings.appearance.header".localized)) {
+                Toggle("settings.appearance.theme.dark".localized, isOn: $viewModel.prefersDarkMode)
             }
 
-            Section(header: Text("settings.security.header".localized)) { // Updated key
-                Toggle("settings.security.biometrics.toggle".localized, isOn: $useBiometricAuth) // Updated key
-                    .onChange(of: useBiometricAuth) {
-                        appState.updateBiometricAuthPreference(enabled: useBiometricAuth)
-                    }
+            Section(header: Text("settings.security.header".localized)) {
+                Toggle("settings.security.biometrics.toggle".localized, isOn: $viewModel.useBiometricAuth)
             }
 
-            Section(header: Text("settings.legal.header".localized)) { // Updated key
-                NavigationLink(destination: LegalDocumentView(title: "settings.legal.privacyPolicy".localized, content: privacyPolicyText)) { // Updated key
-                    Text("settings.legal.privacyPolicy".localized) // Updated key
+            Section(header: Text("settings.legal.header".localized)) {
+                NavigationLink(destination: LegalDocumentView(title: "settings.legal.privacyPolicy".localized, content: privacyPolicyText)) {
+                    Text("settings.legal.privacyPolicy".localized)
                 }
 
-                NavigationLink(destination: LegalDocumentView(title: "settings.legal.termsOfService".localized, content: termsOfServiceText)) { // Updated key
-                    Text("settings.legal.termsOfService".localized) // Updated key
+                NavigationLink(destination: LegalDocumentView(title: "settings.legal.termsOfService".localized, content: termsOfServiceText)) {
+                    Text("settings.legal.termsOfService".localized)
                 }
             }
 
-            Section(header: Text("settings.account.header".localized)) { // Updated key
-                Button(action: { /* TODO: Show delete confirmation */ }) {
-                    Text("settings.account.delete.button".localized) // Updated key
+            Section(header: Text("settings.account.header".localized)) {
+                Button(action: { viewModel.showDeleteAccountConfirmation = true }) {
+                    Text("settings.account.delete.button".localized)
                         .foregroundColor(.red)
                 }
             }
 
-            Section(header: Text("settings.about.header".localized)) { // Added key
+            Section(header: Text("settings.about.header".localized)) {
                 HStack {
-                    Text("settings.about.version".localized) // Added key
+                    Text("settings.about.version".localized)
                     Spacer()
-                    Text(Bundle.main.appVersion) // Use helper extension
+                    Text(Bundle.main.appVersion)
                         .foregroundColor(.secondary)
                 }
             }
         }
-        .navigationTitle("settings.title".localized) // Updated key
+        .navigationTitle("settings.title".localized)
+        .environmentObject(appState)
         .onAppear {
-            if let user = appState.currentUser {
-                notificationsEnabled = user.notificationsEnabled
-                reminderTime = user.reminderTime
-                useBiometricAuth = user.useBiometricAuth
-                prefersDarkMode = user.prefersDarkMode
-            }
+            viewModel.initialize(with: appState)
         }
-    }
-    
-    private func updateNotificationSettings() {
-        appState.updateNotificationPreferences(enabled: notificationsEnabled, reminderTime: reminderTime)
+        .alert(isPresented: $viewModel.showDeleteAccountConfirmation) {
+            Alert(
+                title: Text("settings.account.delete.confirmation.title".localized),
+                message: Text("settings.account.delete.confirmation.message".localized),
+                primaryButton: .destructive(Text("settings.account.delete.confirmation.confirm".localized)) {
+                    viewModel.deleteAccount()
+                },
+                secondaryButton: .cancel(Text("general.cancel".localized))
+            )
+        }
     }
 }
 

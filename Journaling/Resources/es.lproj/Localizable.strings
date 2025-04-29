@@ -25,140 +25,144 @@
 "welcome.feature2.title" = "Registra tu estado de ánimo";
 "welcome.feature2.description" = "Comprende tus patrones emocionales a lo largo del tiempo.";
 "welcome.feature3.title" = "Mantente constante";
-"welcome.feature3.description" = "[es] Set reminders and build a healthy journaling habit.";
-"welcome.login.button" = "[es] Log In";
-"welcome.signup.button" = "[es] Sign Up";
+"welcome.feature3.description" = "Configura recordatorios y desarrolla un hábito saludable de diario.";
+"welcome.login.button" = "Iniciar Sesión";
+"welcome.signup.button" = "Registrarse";
 
 // Login View
-"login.title" = "[es] Log In";
-"login.email.placeholder" = "[es] Email";
-"login.password.placeholder" = "[es] Password";
-"login.forgotPassword.button" = "[es] Forgot Password?";
-"login.button" = "[es] Log In";
-"login.signup.prompt" = "[es] Don't have an account?";
-"login.signup.link" = "[es] Sign up";
+"login.title" = "Iniciar Sesión";
+"login.email.placeholder" = "Correo electrónico";
+"login.password.placeholder" = "Contraseña";
+"login.forgotPassword.button" = "¿Olvidaste tu contraseña?";
+"login.button" = "Iniciar Sesión";
+"login.signup.prompt" = "¿No tienes una cuenta?";
+"login.signup.link" = "Regístrate";
 
 // Signup View
-"signup.title" = "[es] Create Account";
-"signup.name.placeholder" = "[es] Name";
-"signup.email.placeholder" = "[es] Email";
-"signup.password.placeholder" = "[es] Password (min. 6 characters)";
-"signup.button" = "[es] Sign Up";
-"signup.login.prompt" = "[es] Already have an account?";
-"signup.login.link" = "[es] Log in";
+"signup.title" = "Crear Cuenta";
+"signup.name.placeholder" = "Nombre";
+"signup.email.placeholder" = "Correo electrónico";
+"signup.password.placeholder" = "Contraseña (mín. 6 caracteres)";
+"signup.button" = "Registrarse";
+"signup.login.prompt" = "¿Ya tienes una cuenta?";
+"signup.login.link" = "Iniciar sesión";
 
 // Forgot Password View
-"forgotPassword.title" = "[es] Reset Password";
-"forgotPassword.instructions" = "[es] Enter your email address and we'll send you instructions to reset your password.";
-"forgotPassword.email.placeholder" = "[es] Email";
-"forgotPassword.sendReset.button" = "[es] Send Reset Link";
-"forgotPassword.backToLogin.button" = "[es] Back to Login";
-"forgotPassword.success.message" = "[es] Password reset instructions sent to your email.";
+"forgotPassword.title" = "Restablecer Contraseña";
+"forgotPassword.instructions" = "Ingresa tu correo electrónico y te enviaremos instrucciones para restablecer tu contraseña.";
+"forgotPassword.email.placeholder" = "Correo electrónico";
+"forgotPassword.sendReset.button" = "Enviar Enlace de Restablecimiento";
+"forgotPassword.backToLogin.button" = "Volver al Inicio de Sesión";
+"forgotPassword.success.message" = "Instrucciones para restablecer la contraseña enviadas a tu correo.";
 
 // MARK: - Home View
-"home.title" = "[es] Home";
-"home.recentEntries.title" = "[es] Recent Entries";
-"home.newEntry.button" = "[es] New Entry";
-"home.loading.message" = "[es] Loading entries...";
-"home.emptyState.title" = "[es] No Entries Yet";
-"home.emptyState.message" = "[es] Tap the '+' button to create your first journal entry.";
-"home.createFirstEntry.button" = "[es] Create First Entry";
-"home.stats.title" = "[es] Your Stats";
-"home.stats.totalEntries" = "[es] Total Entries";
-"home.stats.dayStreak" = "[es] Day Streak";
-"home.stats.commonMood" = "[es] Common Mood";
+"home.title" = "Inicio";
+"home.recentEntries.title" = "Entradas Recientes";
+"home.newEntry.button" = "Nueva Entrada";
+"home.loading.message" = "Cargando entradas...";
+"home.emptyState.title" = "Sin Entradas Aún";
+"home.emptyState.message" = "Toca el botón '+' para crear tu primera entrada de diario.";
+"home.createFirstEntry.button" = "Crear Primera Entrada";
+"home.stats.title" = "Tus Estadísticas";
+"home.stats.totalEntries" = "Total de Entradas";
+"home.stats.dayStreak" = "Racha de Días";
+"home.stats.commonMood" = "Estado de Ánimo Común";
 
 // MARK: - Calendar View
-"calendar.title" = "[es] Calendar";
-"calendar.entries" = "[es] %d Entries";
-"calendar.noEntries.title" = "[es] No Entries";
-"calendar.noEntries.message" = "[es] No entries recorded for this date.";
+"calendar.title" = "Calendario";
+"calendar.entries" = "%d Entradas";
+"calendar.noEntries.title" = "Sin Entradas";
+"calendar.noEntries.message" = "No hay entradas registradas para esta fecha.";
 
 // MARK: - Journal Entry Detail View
-"entryDetail.title" = "[es] Entry Detail";
-"entryDetail.mood.label" = "[es] Mood";
-"entryDetail.tags.label" = "[es] Tags";
-"entryDetail.created" = "[es] Created";
-"entryDetail.edited" = "[es] Edited";
-"entryDetail.edit" = "[es] Edit";
-"entryDetail.delete" = "[es] Delete";
-"entryDetail.options" = "[es] Options";
-"entryDetail.deleteConfirm.title" = "[es] Delete Entry?";
-"entryDetail.deleteConfirm.message" = "[es] Are you sure you want to permanently delete this journal entry?";
-"general.delete" = "[es] Delete";
+"entryDetail.title" = "Detalle de Entrada";
+"entryDetail.mood.label" = "Estado de Ánimo";
+"entryDetail.tags.label" = "Etiquetas";
+"entryDetail.created" = "Creado";
+"entryDetail.edited" = "Editado";
+"entryDetail.edit" = "Editar";
+"entryDetail.delete" = "Eliminar";
+"entryDetail.options" = "Opciones";
+"entryDetail.deleteConfirm.title" = "¿Eliminar Entrada?";
+"entryDetail.deleteConfirm.message" = "¿Estás seguro de que quieres eliminar permanentemente esta entrada de diario?";
+"general.delete" = "Eliminar";
 
 // MARK: - Journal Entry Editor View
-"editor.title.new" = "[es] New Entry";
-"editor.title.edit" = "[es] Edit Entry";
-"editor.date" = "[es] Date";
-"editor.moodQuestion" = "[es] How are you feeling?";
-"editor.tags" = "[es] Tags";
-"editor.addTag.placeholder" = "[es] Add a tag";
-"editor.journalEntry" = "[es] Journal Entry"; // Added
-"editor.journalEntry.placeholder" = "[es] Start writing your thoughts here...";
-"editor.discardAlert.title" = "[es] Discard Changes?";
-"editor.discardAlert.message" = "[es] Are you sure you want to discard your changes?";
-"editor.discardAlert.discard" = "[es] Discard";
-"editor.discardAlert.keepEditing" = "[es] Keep Editing";
-"general.add" = "[es] Add";
+"editor.title.new" = "Nueva Entrada";
+"editor.title.edit" = "Editar Entrada";
+"editor.date" = "Fecha";
+"editor.moodQuestion" = "¿Cómo te sientes?";
+"editor.tags" = "Etiquetas";
+"editor.addTag.placeholder" = "Añadir una etiqueta";
+"editor.journalEntry" = "Entrada de Diario";
+"editor.journalEntry.placeholder" = "Comienza a escribir tus pensamientos aquí...";
+"editor.discardAlert.title" = "¿Descartar Cambios?";
+"editor.discardAlert.message" = "¿Estás seguro de que quieres descartar tus cambios?";
+"editor.discardAlert.discard" = "Descartar";
+"editor.discardAlert.keepEditing" = "Seguir Editando";
+"general.add" = "Añadir";
 
 // MARK: - Onboarding
-"onboarding.welcome.title" = "[es] Welcome to Reflect"; // Reusing welcome.title
-"onboarding.welcome.description" = "[es] Your personal journaling companion for mindfulness and self-reflection.";
-"onboarding.getStarted.button" = "[es] Get Started";
-"onboarding.personalization.title" = "[es] Personalize Your Experience";
-"onboarding.personalization.subtitle" = "[es] Let's make Reflect yours. Tell us a bit about yourself and your journaling goals.";
-"onboarding.personalization.name.label" = "[es] Your Name";
-"onboarding.personalization.name.placeholder" = "[es] Enter your name";
-"onboarding.personalization.goals.label" = "[es] Journaling Goals";
-"onboarding.personalization.goals.description" = "[es] What would you like to achieve with journaling?";
-"onboarding.notifications.title" = "[es] Reminder Setup";
-"onboarding.notifications.subtitle" = "[es] Never miss a journaling session with daily reminders.";
-"onboarding.notifications.enable.toggle" = "[es] Enable Daily Reminders";
-"onboarding.notifications.time.label" = "[es] Reminder Time";
-"onboarding.complete.title" = "[es] You're All Set!";
-"onboarding.complete.subtitle" = "[es] Your Reflect journal is ready for your thoughts, feelings, and reflections.";
-"onboarding.complete.button" = "[es] Start Journaling";
-"general.continue" = "[es] Continue";
+"onboarding.welcome.title" = "Bienvenido a Reflect";
+"onboarding.welcome.description" = "Tu compañero personal de diario para la atención plena y la autorreflexión.";
+"onboarding.getStarted.button" = "Comenzar";
+"onboarding.personalization.title" = "Personaliza Tu Experiencia";
+"onboarding.personalization.subtitle" = "Hagamos Reflect tuyo. Cuéntanos un poco sobre ti y tus objetivos de diario.";
+"onboarding.personalization.name.label" = "Tu Nombre";
+"onboarding.personalization.name.placeholder" = "Ingresa tu nombre";
+"onboarding.personalization.goals.label" = "Objetivos de Diario";
+"onboarding.personalization.goals.description" = "¿Qué te gustaría lograr con el diario?";
+"onboarding.notifications.title" = "Configuración de Recordatorios";
+"onboarding.notifications.subtitle" = "Nunca te pierdas una sesión de diario con recordatorios diarios.";
+"onboarding.notifications.enable.toggle" = "Activar Recordatorios Diarios";
+"onboarding.notifications.time.label" = "Hora del Recordatorio";
+"onboarding.complete.title" = "¡Todo Listo!";
+"onboarding.complete.subtitle" = "Tu diario Reflect está listo para tus pensamientos, sentimientos y reflexiones.";
+"onboarding.complete.button" = "Comenzar a Escribir";
+"general.continue" = "Continuar";
 
 // MARK: - Profile & Settings
-"profile.title" = "[es] Profile";
-"profile.edit.button" = "[es] Edit";
-"profile.personalInfo.header" = "[es] Personal Information";
-"profile.name.placeholder" = "[es] Your Name";
-"profile.email.label" = "[es] Email";
-"profile.goals.header" = "[es] Journaling Goals";
-"profile.edit.title" = "[es] Edit Profile";
-"profile.logout.button" = "[es] Log Out";
-"profile.logout.confirm.title" = "[es] Log Out?";
-"profile.logout.confirm.message" = "[es] Are you sure you want to log out?";
+"profile.title" = "Perfil";
+"profile.edit.button" = "Editar";
+"profile.personalInfo.header" = "Información Personal";
+"profile.name.placeholder" = "Tu Nombre";
+"profile.email.label" = "Correo Electrónico";
+"profile.goals.header" = "Objetivos de Diario";
+"profile.edit.title" = "Editar Perfil";
+"profile.logout.button" = "Cerrar Sesión";
+"profile.logout.confirm.title" = "¿Cerrar Sesión?";
+"profile.logout.confirm.message" = "¿Estás seguro de que quieres cerrar sesión?";
 
-"settings.title" = "[es] Settings";
-"settings.notifications.header" = "[es] Notifications";
-"settings.notifications.enable.toggle" = "[es] Enable Reminders";
-"settings.notifications.time.label" = "[es] Reminder Time";
-"settings.appearance.header" = "[es] Appearance";
-"settings.appearance.theme.label" = "[es] Theme";
-"settings.appearance.theme.system" = "[es] System";
-"settings.appearance.theme.light" = "[es] Light";
-"settings.appearance.theme.dark" = "[es] Dark";
-"settings.security.header" = "[es] Security";
-"settings.security.biometrics.toggle" = "[es] Use Face ID / Touch ID";
-"settings.legal.header" = "[es] Legal";
-"settings.legal.privacyPolicy" = "[es] Privacy Policy";
-"settings.legal.termsOfService" = "[es] Terms of Service";
-"settings.account.header" = "[es] Account";
-"settings.account.delete.button" = "[es] Delete Account";
-"settings.account.delete.confirm.title" = "[es] Delete Account?";
-"settings.account.delete.confirm.message" = "[es] This action is irreversible. All your journal entries and data will be permanently deleted.";
+"settings.title" = "Configuración";
+"settings.notifications.header" = "Notificaciones";
+"settings.notifications.enable.toggle" = "Activar Recordatorios";
+"settings.notifications.time.label" = "Hora del Recordatorio";
+"settings.appearance.header" = "Apariencia";
+"settings.appearance.theme.label" = "Tema";
+"settings.appearance.theme.system" = "Sistema";
+"settings.appearance.theme.light" = "Claro";
+"settings.appearance.theme.dark" = "Oscuro";
+"settings.security.header" = "Seguridad";
+"settings.security.biometrics.toggle" = "Usar Face ID / Touch ID";
+"settings.legal.header" = "Legal";
+"settings.legal.privacyPolicy" = "Política de Privacidad";
+"settings.legal.termsOfService" = "Términos de Servicio";
+"settings.account.header" = "Cuenta";
+"settings.account.delete.button" = "Eliminar Cuenta";
+"settings.account.delete.confirm.title" = "¿Eliminar Cuenta?";
+"settings.account.delete.confirm.message" = "Esta acción es irreversible. Todas tus entradas de diario y datos serán eliminados permanentemente.";
 
 // MARK: - Moods
-"mood.happy" = "[es] Happy";
-"mood.content" = "[es] Content";
-"mood.neutral" = "[es] Neutral";
-"mood.sad" = "[es] Sad";
-"mood.anxious" = "[es] Anxious";
-"mood.angry" = "[es] Angry";
+"mood.happy" = "Feliz";
+"mood.content" = "Contento";
+"mood.neutral" = "Neutral";
+"mood.sad" = "Triste";
+"mood.anxious" = "Ansioso";
+"mood.angry" = "Enojado";
 
 // MARK: - App Specific
-"app.name" = "[es] Reflect";
+"app.name" = "Reflect";
+
+// MARK: - Language Settings
+"settings.language.header" = "Idioma";
+"settings.language.title" = "Seleccionar Idioma";

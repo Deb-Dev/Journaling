@@ -101,6 +101,21 @@ extension Date {
 
 // MARK: - String Extensions
 extension String {
+    /// Checks if the string contains at least one emoji character
+    var containsEmoji: Bool {
+        for scalar in unicodeScalars {
+            // Check if the scalar is an emoji
+            // This covers most emoji ranges including emoticons, symbols, and pictographs
+            if scalar.properties.isEmoji && scalar.value > 0x238C {
+                return true
+            }
+        }
+        return false
+    }
+}
+
+// MARK: - String Extensions
+extension String {
     /// Returns true if the string is a valid email
     var isValidEmail: Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
